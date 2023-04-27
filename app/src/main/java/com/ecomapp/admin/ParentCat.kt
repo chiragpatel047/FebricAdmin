@@ -3,6 +3,7 @@ package com.ecomapp.admin
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.ecomapp.admin.databinding.ActivityParentCatBinding
 
@@ -34,4 +35,5 @@ class ParentCat : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
 }

@@ -18,6 +18,15 @@
         android:theme="@style/Theme.Admin"
         tools:targetApi="31">
         <activity
+            android:name=".AddSubCategory"
+            android:exported="false" />
+        <activity
+            android:name=".SubCategory"
+            android:exported="false" />
+        <activity
+            android:name=".AddMainCat"
+            android:exported="false" />
+        <activity
             android:name=".MainCat"
             android:exported="false" />
         <activity

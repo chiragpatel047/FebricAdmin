@@ -1,5 +1,6 @@
 package com.ecomapp.admin
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
@@ -27,28 +28,29 @@ class MainCat : AppCompatActivity() {
     @Inject
     lateinit var mainCatVMF: MainCatVMF
 
+    var parentCatName : String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main_cat)
         supportActionBar?.hide()
 
-        val parentCat = intent.getStringExtra("parentCat")
-        binding.topName.text = parentCat
+        parentCatName = intent.getStringExtra("parentCat")
+        binding.topName.text = parentCatName
 
         mainCatViewModel = ViewModelProvider(this,mainCatVMF).get(MainCatViewModel::class.java)
 
         mainCatList = ArrayList()
-        mainCatAdapter = MainCatAdapter(this,mainCatList)
+        mainCatAdapter = MainCatAdapter(this,mainCatList,::getParentCat)
 
         binding.catRecv.layoutManager = LinearLayoutManager(this)
         binding.catRecv.adapter = mainCatAdapter
 
-        mainCatViewModel.LoadMainCategories(parentCat!!)
-
         mainCatViewModel.mainCat_liveData.observe(this,{
             when(it){
                 is Response.Sucess ->{
+
                     mainCatList.clear()
                     mainCatList.addAll(it.data!!)
                     it.data.clear()
@@ -66,7 +68,19 @@ class MainCat : AppCompatActivity() {
             }
         })
 
-        mainCatAdapter.notifyDataSetChanged()
+        binding.addMainCat.setOnClickListener {
+            val intent = Intent(this,AddMainCat::class.java)
+            intent.putExtra("parentCat",parentCatName)
+            startActivity(intent)
+        }
+    }
 
+    fun getParentCat() : String{
+        return parentCatName!!
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainCatViewModel.LoadMainCategories(parentCatName!!)
     }
 }

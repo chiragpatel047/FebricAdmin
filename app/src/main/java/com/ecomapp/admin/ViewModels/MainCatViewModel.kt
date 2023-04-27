@@ -15,6 +15,7 @@ class MainCatViewModel @Inject constructor(val dataRepository: DataRepository) :
     val mainCat_liveData : LiveData<Response<ArrayList<MainCatModel>>>
         get() = mainCat_mutableLiveData
 
+
     fun LoadMainCategories(catName : String){
         viewModelScope.async {
             val result = dataRepository.LoadMainCategories(catName)

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.ecomapp.admin.SubCategory
 import com.ecomapp.admin.Models.MainCatModel
 import com.ecomapp.admin.R
 import com.ecomapp.admin.databinding.MainCategorySingleBinding
@@ -14,6 +15,7 @@ import com.ecomapp.admin.databinding.MainCategorySingleBinding
 class MainCatAdapter(
     myContext: Context,
     myMaimCatList: ArrayList<MainCatModel>,
+    val onCatClicked: () -> String,
 ) : RecyclerView.Adapter<MainCatAdapter.MainCatViewHolder>() {
 
     var context = myContext
@@ -49,11 +51,10 @@ class MainCatAdapter(
         holder.mainCatBinding.mainCatItemName.text = singleMainCat.mainCatName
 
         holder.itemView.setOnClickListener {
-
-//            val intent = Intent(context,SubCategory::class.java)
-//            intent.putExtra("mainCat",singleMainCat.mainCatName)
-//            context.startActivity(intent)
-
+            val intent = Intent(context, SubCategory::class.java)
+            intent.putExtra("mainCat",singleMainCat.mainCatName)
+            intent.putExtra("parentCat",onCatClicked.invoke())
+            context.startActivity(intent)
         }
     }
 }

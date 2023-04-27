@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/main_background"
-        tools:context=".MainCat">
+        tools:context=".SubCategory">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
@@ -39,7 +39,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/cat_recv"
+            android:id="@+id/sub_cat_recv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -75,7 +75,7 @@
                 android:layout_marginStart="10dp"
                 android:fontFamily="@font/poppins_medium"
                 android:paddingRight="5dp"
-                android:text="Add Category"
+                android:text="Add sub Category"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toEndOf="@+id/imageView13"
                 app:layout_constraintTop_toTopOf="parent" />
