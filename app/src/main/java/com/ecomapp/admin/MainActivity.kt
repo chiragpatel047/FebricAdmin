@@ -27,7 +27,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.products.setOnClickListener {
-
+            val intent = Intent(this,Products::class.java)
+            startActivity(intent)
         }
     }
 }

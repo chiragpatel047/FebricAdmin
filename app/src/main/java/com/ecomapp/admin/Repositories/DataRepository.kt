@@ -3,6 +3,7 @@ package com.ecomapp.admin.Repositories
 import android.net.Uri
 import com.ecomapp.admin.Models.MainCatModel
 import com.ecomapp.admin.Models.SubCatModel
+import com.ecomapp.febric.Models.ProuctModel
 import com.ecomapp.febric.Repositories.Response
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -16,6 +17,7 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
 
     var mainCatList = ArrayList<MainCatModel>()
     var subCatList = ArrayList<SubCatModel>()
+    var AllProductList = ArrayList<ProuctModel>()
 
     suspend fun LoadMainCategories(catName : String) : Response<ArrayList<MainCatModel>>{
 
@@ -101,4 +103,22 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
             Response.Error(e.message.toString())
         }
     }
+
+    suspend fun LoadAllProducts() : Response<ArrayList<ProuctModel>>{
+
+        val snapshot = withContext(Dispatchers.IO){
+            database.collection("AllProducts").get().await()
+        }
+
+        val fetching = withContext(Dispatchers.IO){
+            AllProductList.addAll(snapshot.toObjects(ProuctModel::class.java))
+        }
+
+        return try {
+            Response.Sucess(AllProductList)
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
+
 }
