@@ -13,6 +13,21 @@
         android:background="@color/main_background"
         tools:context=".SelectCategories">
 
+        <Spinner
+            android:id="@+id/subCatSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:foreground="@drawable/checkbox_unselected"
+            android:popupBackground="@color/second_backgroud"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/parentCatSpinner">
+
+        </Spinner>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
@@ -28,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_medium"
-                android:text="Select Categories"
+                android:text="Add product"
                 android:textColor="@color/font_color"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -38,6 +53,33 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+        <Spinner
+            android:id="@+id/parentCatSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="15dp"
+            android:foreground="@drawable/checkbox_unselected"
+            android:popupBackground="@color/second_backgroud"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+        </Spinner>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/sub_cat_recv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subCatSpinner" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
