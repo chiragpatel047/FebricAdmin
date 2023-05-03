@@ -16,21 +16,17 @@ import com.ecomapp.admin.databinding.ActivityAddProductImagesBinding
 class AddProductImages : AppCompatActivity() {
 
     lateinit var binding: ActivityAddProductImagesBinding
-
-    lateinit var addImageArrayList : ArrayList<String>
     lateinit var addImageAdapter : AddPhotoAdapter
+
+    companion object{
+        lateinit var addImageArrayList : ArrayList<String>
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_product_images)
         supportActionBar?.hide()
-
-        val productTitle = intent.getStringExtra("productTitle")
-        val productSubTitle = intent.getStringExtra("productSubTitle")
-        val productDesc = intent.getStringExtra("productDesc")
-        val productOldPrice = intent.getStringExtra("productOldPrice")
-        val productPrice = intent.getStringExtra("productPrice")
 
         addImageArrayList = ArrayList()
         addImageAdapter = AddPhotoAdapter(this,addImageArrayList)
@@ -43,7 +39,7 @@ class AddProductImages : AppCompatActivity() {
                 Toast.makeText(this,"Please select images",Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            val intent = Intent(this,SelectCategories::class.java)
+            val intent = Intent(this,SelectSize::class.java)
             startActivity(intent)
         }
 

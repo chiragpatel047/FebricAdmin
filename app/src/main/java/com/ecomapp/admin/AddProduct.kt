@@ -11,6 +11,15 @@ class AddProduct : AppCompatActivity() {
 
     lateinit var binding : ActivityAddProductBinding
 
+    companion object{
+
+        var productTitle : String = ""
+        var productSubTitle : String = ""
+        var productDesc : String = ""
+        var productOldPrice : String = ""
+        var productPrice : String = ""
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -36,12 +45,6 @@ class AddProduct : AppCompatActivity() {
             }
 
             val intent = Intent(this,AddProductImages::class.java)
-            intent.putExtra("productTitle",productTitle)
-            intent.putExtra("productSubTitle",productSubTitle)
-            intent.putExtra("productDesc",productDesc)
-            intent.putExtra("productOldPrice",productOldPrice)
-            intent.putExtra("productPrice",productPrice)
-
             startActivity(intent)
         }
     }

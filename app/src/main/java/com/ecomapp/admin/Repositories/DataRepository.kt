@@ -1,6 +1,7 @@
 package com.ecomapp.admin.Repositories
 
 import android.net.Uri
+import com.ecomapp.admin.Models.BannerModel
 import com.ecomapp.admin.Models.MainCatModel
 import com.ecomapp.admin.Models.SubCatModel
 import com.ecomapp.febric.Models.ProuctModel
@@ -15,9 +16,28 @@ import javax.inject.Inject
 
 class DataRepository @Inject constructor(val database : FirebaseFirestore,val storage: FirebaseStorage) {
 
+    var bannerList  = ArrayList<BannerModel>()
     var mainCatList = ArrayList<MainCatModel>()
     var subCatList = ArrayList<SubCatModel>()
     var AllProductList = ArrayList<ProuctModel>()
+
+
+    suspend fun LoadHomeBanners() : Response<ArrayList<BannerModel>>{
+
+        val snapshot = withContext(Dispatchers.IO){
+            database.collection("HomeBanners").get().await()
+        }
+
+        val fetching = withContext(Dispatchers.IO){
+            bannerList.addAll(snapshot.toObjects(BannerModel::class.java))
+        }
+
+        return try {
+            Response.Sucess(bannerList)
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
 
     suspend fun LoadMainCategories(catName : String) : Response<ArrayList<MainCatModel>>{
 
@@ -120,5 +140,34 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
             Response.Error(e.message.toString())
         }
     }
+
+    suspend fun AddNewProduct(parentCatName : String,mainCatName : String,prouctModel: ProuctModel) :  Response<String>{
+
+        val addIntoAllProduct = withContext(Dispatchers.IO){
+            database.collection("AllProducts")
+                .document(prouctModel.ProductId!!)
+                .set(prouctModel)
+                .await()
+        }
+
+        val insertIntoCat = withContext(Dispatchers.IO){
+
+//            database.collection("Categories")
+//                .document(parentCatName)
+//                .collection("MainCategories")
+//                .document(mainCatName)
+//                .collection("SubCategories")
+//                .document(subCatModel.subCatName!!)
+//                .set(subCatModel).await()
+        }
+
+        return try {
+            Response.Sucess("Success")
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
+
+
 
 }
