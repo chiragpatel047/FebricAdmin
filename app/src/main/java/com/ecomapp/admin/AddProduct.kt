@@ -28,11 +28,11 @@ class AddProduct : AppCompatActivity() {
 
         binding.btnNext.setOnClickListener {
 
-            val productTitle = binding.productTitle.editText?.text.toString()
-            val productSubTitle = binding.productSubtitle.editText?.text.toString()
-            val productDesc = binding.productDesc.editText?.text.toString()
-            val productOldPrice = binding.productOldprice.editText?.text.toString()
-            val productPrice = binding.productPrice.editText?.text.toString()
+            productTitle = binding.productTitle.editText?.text.toString()
+            productSubTitle = binding.productSubtitle.editText?.text.toString()
+            productDesc = binding.productDesc.editText?.text.toString()
+            productOldPrice = binding.productOldprice.editText?.text.toString()
+            productPrice = binding.productPrice.editText?.text.toString()
 
             if(productTitle.isEmpty() ||
                 productSubTitle.isEmpty() ||

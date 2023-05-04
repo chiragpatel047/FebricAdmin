@@ -197,6 +197,21 @@
 
 
                 <Spinner
+                    android:id="@+id/subCatSpinner2"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="15dp"
+                    android:foreground="@drawable/checkbox_unselected"
+                    android:popupBackground="@color/second_backgroud"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/subCatSpinner">
+
+                </Spinner>
+
+                <Spinner
                     android:id="@+id/parentCatSpinner"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
@@ -211,23 +226,12 @@
 
                 </Spinner>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/sub_cat_recv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/subCatSpinner" />
-
                 <TextView
                     android:id="@+id/btn_add"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="40dp"
                     android:layout_marginEnd="15dp"
                     android:background="@drawable/red_button"
                     android:elevation="5dp"
@@ -239,7 +243,7 @@
                     android:textSize="16sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/sub_cat_recv" />
+                    app:layout_constraintTop_toBottomOf="@+id/subCatSpinner2" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

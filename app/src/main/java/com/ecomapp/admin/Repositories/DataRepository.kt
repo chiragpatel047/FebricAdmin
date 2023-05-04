@@ -3,8 +3,11 @@ package com.ecomapp.admin.Repositories
 import android.net.Uri
 import com.ecomapp.admin.Models.BannerModel
 import com.ecomapp.admin.Models.MainCatModel
+import com.ecomapp.admin.Models.ProductImageModel
 import com.ecomapp.admin.Models.SubCatModel
+import com.ecomapp.febric.Models.ProductIdModel
 import com.ecomapp.febric.Models.ProuctModel
+import com.ecomapp.febric.Models.SizeModel
 import com.ecomapp.febric.Repositories.Response
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -20,7 +23,6 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
     var mainCatList = ArrayList<MainCatModel>()
     var subCatList = ArrayList<SubCatModel>()
     var AllProductList = ArrayList<ProuctModel>()
-
 
     suspend fun LoadHomeBanners() : Response<ArrayList<BannerModel>>{
 
@@ -141,24 +143,80 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
         }
     }
 
-    suspend fun AddNewProduct(parentCatName : String,mainCatName : String,prouctModel: ProuctModel) :  Response<String>{
+    suspend fun AddNewProduct(parentCatName : String,mainCatName : String,subCatName : String,
+                              prouctModel: ProuctModel,
+                              sizeList : ArrayList<SizeModel>,
+                              imageList : ArrayList<ProductImageModel>) :  Response<String>{
+
+        val uploadImageList : ArrayList<ProductImageModel> = ArrayList()
+
+        val upload = withContext(Dispatchers.IO){
+
+            for(singleImage in imageList){
+                val ref =  storage.reference.child("ProductsImages")
+                    .child(System.currentTimeMillis().toString())
+                ref.putFile(Uri.parse(singleImage.ImageUrl)).await()
+
+                val getUrl = withContext(Dispatchers.IO){
+                    ref.downloadUrl.await()
+                }
+                uploadImageList.add(ProductImageModel(getUrl.toString()))
+            }
+            prouctModel.productMainImage=uploadImageList.get(0).ImageUrl
+        }
 
         val addIntoAllProduct = withContext(Dispatchers.IO){
             database.collection("AllProducts")
-                .document(prouctModel.ProductId!!)
+                .document(prouctModel.productId!!)
                 .set(prouctModel)
                 .await()
         }
 
+        val addProductImages = withContext(Dispatchers.IO){
+
+            var i : Int = 1
+
+            for(singleUplodUrl in uploadImageList){
+
+                database.collection("AllProducts")
+                    .document(prouctModel.productId!!)
+                    .collection("ProductImages")
+                    .document(i.toString())
+                    .set(singleUplodUrl)
+                    .await()
+                i++
+            }
+        }
+
+        val addSizes = withContext(Dispatchers.IO){
+
+            var i : Int = 1
+
+            for(singleSize in sizeList){
+
+                database.collection("AllProducts")
+                    .document(prouctModel.productId!!)
+                    .collection("Sizes")
+                    .document(i.toString())
+                    .set(singleSize)
+                    .await()
+                i++
+            }
+        }
+
         val insertIntoCat = withContext(Dispatchers.IO){
 
-//            database.collection("Categories")
-//                .document(parentCatName)
-//                .collection("MainCategories")
-//                .document(mainCatName)
-//                .collection("SubCategories")
-//                .document(subCatModel.subCatName!!)
-//                .set(subCatModel).await()
+            val productIdModel : ProductIdModel = ProductIdModel(prouctModel.productId)
+
+            database.collection("Categories")
+                .document(parentCatName)
+                .collection("MainCategories")
+                .document(mainCatName)
+                .collection("SubCategories")
+                .document(subCatName)
+                .collection("Products")
+                .document(prouctModel.productId!!)
+                .set(productIdModel).await()
         }
 
         return try {
@@ -167,7 +225,5 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
             Response.Error(e.message.toString())
         }
     }
-
-
 
 }

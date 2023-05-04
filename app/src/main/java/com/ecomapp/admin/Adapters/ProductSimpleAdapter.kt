@@ -45,13 +45,13 @@ class ProductSimpleAdapter(myContext: Context, myItemModel: ArrayList<ProuctMode
 
         var singleItem = productList.get(position)
 
-        Glide.with(context).load(singleItem.ProductMainImage).into(holder.productSimpleItemBinding.itemImage)
-        holder.productSimpleItemBinding.itemName.text = singleItem.ProductTitle
-        holder.productSimpleItemBinding.itemText.text = singleItem.ProductSubTitle
-        holder.productSimpleItemBinding.itemRating.rating = singleItem.Rate?.toFloatOrNull()!!
-        holder.productSimpleItemBinding.itemNumberOfRating.text = "("+singleItem.NoOfRating+")"
-        holder.productSimpleItemBinding.itemOldPrice.text = singleItem.ProductOldPrice+"₹"
-        holder.productSimpleItemBinding.itemNewPrice.text = singleItem.ProductPrice+"₹"
+        Glide.with(context).load(singleItem.productMainImage).into(holder.productSimpleItemBinding.itemImage)
+        holder.productSimpleItemBinding.itemText.text = singleItem.productTitle
+        holder.productSimpleItemBinding.itemName.text = singleItem.productSubTitle
+        holder.productSimpleItemBinding.itemRating.rating = singleItem.rate?.toFloatOrNull()!!
+        holder.productSimpleItemBinding.itemNumberOfRating.text = "("+singleItem.noOfRating+")"
+        holder.productSimpleItemBinding.itemOldPrice.text = singleItem.productOldPrice+"₹"
+        holder.productSimpleItemBinding.itemNewPrice.text = singleItem.productPrice+"₹"
 
 //        holder.itemView.setOnClickListener {
 //            val intent = Intent(context, FullProduct::class.java)

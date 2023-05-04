@@ -9,12 +9,13 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ecomapp.admin.Adapters.SelectSubCatAdapter
 import com.ecomapp.admin.Factories.SelectCatVMF
-import com.ecomapp.admin.Models.MainCatModel
+import com.ecomapp.admin.Models.ProductImageModel
 import com.ecomapp.admin.Models.SubCatModel
 import com.ecomapp.admin.ViewModels.SelectCateViewModel
 import com.ecomapp.admin.databinding.ActivitySelectCategoriesBinding
+import com.ecomapp.febric.Models.ProuctModel
+import com.ecomapp.febric.Models.SizeModel
 import com.ecomapp.febric.Repositories.Response
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -28,10 +29,11 @@ class SelectCategories : AppCompatActivity() {
     @Inject
     lateinit var selectCatVMF: SelectCatVMF
 
+    var selectedParentCat  : String = ""
     var selectedMainCat  : String = ""
+    var selectedSubCat  : String = ""
 
     lateinit var subCatList : ArrayList<SubCatModel>
-    lateinit var selectSubCatAdapter: SelectSubCatAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,13 +54,11 @@ class SelectCategories : AppCompatActivity() {
                     binding.checkboxTop4.text = it.data?.get(3)?.MainTitle.toString()
                     binding.checkboxTop5.text = it.data?.get(4)?.MainTitle.toString()
                     binding.checkboxTop5.text = it.data?.get(5)?.MainTitle.toString()
-
                 }
 
                 is Response.Error -> {
 
                 }
-
                 is Response.Loading -> {
 
                 }
@@ -86,6 +86,15 @@ class SelectCategories : AppCompatActivity() {
         MainCatSpinnerAdapter.add("Select sub category")
         MainCatSpinnerAdapter.notifyDataSetChanged()
 
+        val SubCatSpinnerAdapter =
+            ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1)
+
+        SubCatSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        binding.subCatSpinner2.adapter = SubCatSpinnerAdapter
+        SubCatSpinnerAdapter.add("Select sub category")
+        SubCatSpinnerAdapter.notifyDataSetChanged()
+
         selectCateViewModel.mainCat_liveData.observe(this,{
             when(it){
                 is Response.Sucess -> {
@@ -98,31 +107,30 @@ class SelectCategories : AppCompatActivity() {
                     }
                     MainCatSpinnerAdapter.notifyDataSetChanged()
                     it.data.clear()
+
                 }
+
                 is Response.Error -> {
 
                 }
+
                 is Response.Loading -> {
 
                 }
-
             }
         })
-
-        binding.subCatRecv.layoutManager = LinearLayoutManager(this)
-
-        subCatList = ArrayList()
-        selectSubCatAdapter = SelectSubCatAdapter(this,subCatList)
-
-        binding.subCatRecv.adapter = selectSubCatAdapter
 
         selectCateViewModel.subCat_liveData.observe(this,{
             when(it){
                 is Response.Sucess ->{
-                    subCatList.clear()
-                    subCatList.addAll(it.data!!)
+                    SubCatSpinnerAdapter.clear()
+                    SubCatSpinnerAdapter.add("Select sub category")
+
+                    for(singleItem in it.data!!){
+                        SubCatSpinnerAdapter.add(singleItem.subCatName)
+                    }
+                    SubCatSpinnerAdapter.notifyDataSetChanged()
                     it.data.clear()
-                    selectSubCatAdapter.notifyDataSetChanged()
                 }
                 is Response.Error ->{
 
@@ -144,8 +152,8 @@ class SelectCategories : AppCompatActivity() {
                 MainCatSpinnerAdapter.clear()
                 MainCatSpinnerAdapter.add("Select sub category")
                 MainCatSpinnerAdapter.notifyDataSetChanged()
-                selectedMainCat = binding.parentCatSpinner.selectedItem.toString()
-                selectCateViewModel.LoadMainCategories(selectedMainCat)
+                selectedParentCat = binding.parentCatSpinner.selectedItem.toString()
+                selectCateViewModel.LoadMainCategories(selectedParentCat)
 
             }
         }
@@ -156,8 +164,19 @@ class SelectCategories : AppCompatActivity() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
-                val selectedSubCat = binding.subCatSpinner.selectedItem.toString()
-                selectCateViewModel.LoadSubCatigories(selectedMainCat,selectedSubCat)
+                selectedMainCat = binding.subCatSpinner.selectedItem.toString()
+                selectCateViewModel.LoadSubCatigories(selectedParentCat,selectedMainCat)
+            }
+        }
+
+        binding.subCatSpinner2?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
+                selectedSubCat = binding.subCatSpinner2.selectedItem.toString()
             }
         }
 
@@ -167,19 +186,48 @@ class SelectCategories : AppCompatActivity() {
                     Toast.makeText(this,"Added",Toast.LENGTH_LONG).show()
                 }
                 is Response.Error -> {
-
+                    Toast.makeText(this,it.errorMsg.toString(),Toast.LENGTH_LONG).show()
                 }
-
                 is Response.Loading -> {
 
                 }
-
             }
         })
 
         binding.btnAdd.setOnClickListener {
 
-           // selectCateViewModel.AddNewProduct()
+            val ProductId : String = System.currentTimeMillis().toString()
+            val ProductTitle : String = AddProduct.productTitle
+            val ProductSubTitle : String = AddProduct.productSubTitle
+            val ProductDesc : String = AddProduct.productDesc
+            val ProductOldPrice : String = AddProduct.productOldPrice
+            val ProductPrice : String = AddProduct.productPrice
+            val NoOfRating : String = "0"
+            val Rate : String = "0.0F"
+
+            val imageStringList : ArrayList<String> = AddProductImages.addImageArrayList
+            val imageList : ArrayList<ProductImageModel> = ArrayList()
+
+            for(singleImage in imageStringList){
+                imageList.add(ProductImageModel(singleImage))
+            }
+
+            val ProductMainImage : String = imageStringList.get(0)
+
+            val prouctModel : ProuctModel = ProuctModel(ProductId,
+                ProductTitle,
+                ProductSubTitle,
+                ProductDesc,
+                ProductOldPrice,
+                ProductPrice,
+                ProductMainImage,
+                NoOfRating,
+                Rate)
+
+            val sizeList : ArrayList<SizeModel> = SelectSize.sizeList
+
+            selectCateViewModel.AddNewProduct(selectedParentCat,selectedMainCat,selectedSubCat,prouctModel,sizeList,imageList)
+
         }
     }
 }

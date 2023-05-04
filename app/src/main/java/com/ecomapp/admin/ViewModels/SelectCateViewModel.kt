@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ecomapp.admin.Models.BannerModel
 import com.ecomapp.admin.Models.MainCatModel
+import com.ecomapp.admin.Models.ProductImageModel
 import com.ecomapp.admin.Models.SubCatModel
 import com.ecomapp.admin.Repositories.DataRepository
 import com.ecomapp.febric.Models.ProuctModel
+import com.ecomapp.febric.Models.SizeModel
 import com.ecomapp.febric.Repositories.Response
 import kotlinx.coroutines.async
 import javax.inject.Inject
@@ -51,12 +53,12 @@ class SelectCateViewModel @Inject constructor(val dataRepository: DataRepository
             subCat_mutableLiveData.postValue(result)
         }
     }
-    fun AddNewProduct(parentCatName: String, mainCatName: String,prouctModel: ProuctModel){
+    fun AddNewProduct(parentCatName: String, mainCatName: String,subCatName : String, prouctModel: ProuctModel ,sizeList : ArrayList<SizeModel>,
+                      imageList : ArrayList<ProductImageModel>){
+
         viewModelScope.async {
-            val result = dataRepository.AddNewProduct(parentCatName, mainCatName,prouctModel)
+            val result = dataRepository.AddNewProduct(parentCatName, mainCatName,subCatName,prouctModel,sizeList,imageList)
             add_mutableLiveData.postValue(result)
         }
     }
-
-
 }
