@@ -1,5 +1,6 @@
 package com.ecomapp.admin
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -184,6 +185,9 @@ class SelectCategories : AppCompatActivity() {
             when(it){
                 is Response.Sucess -> {
                     Toast.makeText(this,"Added",Toast.LENGTH_LONG).show()
+                    val intent = Intent(this,MainActivity::class.java)
+                    startActivity(intent)
+                    finishAffinity()
                 }
                 is Response.Error -> {
                     Toast.makeText(this,it.errorMsg.toString(),Toast.LENGTH_LONG).show()

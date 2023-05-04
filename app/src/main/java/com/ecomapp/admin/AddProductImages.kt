@@ -40,7 +40,7 @@ class AddProductImages : AppCompatActivity() {
                 return@setOnClickListener
             }
             val intent = Intent(this,SelectSize::class.java)
-            startActivity(intent)
+            startActivityIfNeeded(intent,20)
         }
 
         binding.addImage.setOnClickListener {

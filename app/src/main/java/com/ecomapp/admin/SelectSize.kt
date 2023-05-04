@@ -22,7 +22,6 @@ class SelectSize : AppCompatActivity() {
     companion object{
         lateinit var sizeList : ArrayList<SizeModel>
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -63,7 +62,7 @@ class SelectSize : AppCompatActivity() {
                 return@setOnClickListener
             }
             val intent = Intent(this,SelectCategories::class.java)
-            startActivity(intent)
+            startActivityIfNeeded(intent,10)
         }
     }
 }

@@ -45,7 +45,7 @@ class AddProduct : AppCompatActivity() {
             }
 
             val intent = Intent(this,AddProductImages::class.java)
-            startActivity(intent)
+            startActivityIfNeeded(intent,30)
         }
     }
 }
