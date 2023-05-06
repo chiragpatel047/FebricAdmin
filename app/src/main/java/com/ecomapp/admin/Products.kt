@@ -39,7 +39,7 @@ class Products : AppCompatActivity() {
         productViewModel.LoadAllProducts()
 
         productList = ArrayList()
-        productAdapter = ProductSimpleAdapter(this,productList)
+        productAdapter = ProductSimpleAdapter(this,productList,::deleteItem)
 
         binding.productsRecv.layoutManager = LinearLayoutManager(this)
         binding.productsRecv.adapter = productAdapter
@@ -54,7 +54,11 @@ class Products : AppCompatActivity() {
             when(it){
                 is Response.Sucess -> {
                     productList.clear()
-                    productList.addAll(0,it.data!!)
+
+                    for(singleitem in it.data!!){
+                        productList.add(0,singleitem)
+                    }
+                    
                     it.data.clear()
                     productAdapter.notifyDataSetChanged()
                 }
@@ -65,9 +69,11 @@ class Products : AppCompatActivity() {
                 is Response.Loading ->{
 
                 }
-
             }
-
         })
+    }
+
+    fun deleteItem(productId : String) {
+        productViewModel.deleteProduct(productId)
     }
 }

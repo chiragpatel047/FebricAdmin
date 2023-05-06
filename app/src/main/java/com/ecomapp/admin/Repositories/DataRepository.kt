@@ -146,7 +146,8 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
     suspend fun AddNewProduct(parentCatName : String,mainCatName : String,subCatName : String,
                               prouctModel: ProuctModel,
                               sizeList : ArrayList<SizeModel>,
-                              imageList : ArrayList<ProductImageModel>) :  Response<String>{
+                              imageList : ArrayList<ProductImageModel>,
+                              selectedList : ArrayList<String>) :  Response<String>{
 
         val uploadImageList : ArrayList<ProductImageModel> = ArrayList()
 
@@ -219,6 +220,20 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
                 .set(productIdModel).await()
         }
 
+
+        val insertIntoBanners = withContext(Dispatchers.IO){
+
+            val productIdModel : ProductIdModel = ProductIdModel(prouctModel.productId)
+
+            for(single in selectedList){
+                database.collection("HomeBanners")
+                    .document(single)
+                    .collection("Products")
+                    .document(productIdModel.ProductId!!)
+                    .set(productIdModel).await()
+            }
+        }
+
         return try {
             Response.Sucess("Success")
         }catch (e : Exception){
@@ -226,4 +241,17 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
         }
     }
 
+    suspend fun deleteProduct(productId : String) : Response<String>{
+        val addIntoAllProduct = withContext(Dispatchers.IO){
+            database.collection("AllProducts")
+                .document(productId)
+                .delete()
+                .await()
+        }
+        return try {
+            Response.Sucess("Success")
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
 }

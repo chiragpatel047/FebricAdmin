@@ -1,7 +1,6 @@
 package com.ecomapp.febric.Adapters
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -10,8 +9,13 @@ import com.bumptech.glide.Glide
 import com.ecomapp.admin.R
 import com.ecomapp.admin.databinding.ProductSimpleSingleItemBinding
 import com.ecomapp.febric.Models.ProuctModel
+import kotlin.math.sin
 
-class ProductSimpleAdapter(myContext: Context, myItemModel: ArrayList<ProuctModel>) : RecyclerView.Adapter<ProductSimpleAdapter.ProductSimpleViewHolder>() {
+class ProductSimpleAdapter(
+    myContext: Context,
+    myItemModel: ArrayList<ProuctModel>,
+    val deleteItem: (String) -> Unit
+) : RecyclerView.Adapter<ProductSimpleAdapter.ProductSimpleViewHolder>() {
 
     var context = myContext
     var productList = myItemModel
@@ -52,6 +56,12 @@ class ProductSimpleAdapter(myContext: Context, myItemModel: ArrayList<ProuctMode
         holder.productSimpleItemBinding.itemNumberOfRating.text = "("+singleItem.noOfRating+")"
         holder.productSimpleItemBinding.itemOldPrice.text = singleItem.productOldPrice+"₹"
         holder.productSimpleItemBinding.itemNewPrice.text = singleItem.productPrice+"₹"
+
+        holder.productSimpleItemBinding.removeImage.setOnClickListener {
+            deleteItem.invoke(singleItem.productId!!)
+            productList.remove(singleItem)
+            notifyDataSetChanged()
+        }
 
 //        holder.itemView.setOnClickListener {
 //            val intent = Intent(context, FullProduct::class.java)

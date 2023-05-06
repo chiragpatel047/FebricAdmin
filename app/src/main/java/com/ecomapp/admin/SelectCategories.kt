@@ -3,10 +3,12 @@ package com.ecomapp.admin
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +17,8 @@ import com.ecomapp.admin.Models.ProductImageModel
 import com.ecomapp.admin.Models.SubCatModel
 import com.ecomapp.admin.ViewModels.SelectCateViewModel
 import com.ecomapp.admin.databinding.ActivitySelectCategoriesBinding
+import com.ecomapp.admin.databinding.LoadingDialogBinding
+import com.ecomapp.admin.databinding.ProductSimpleSingleItemBinding
 import com.ecomapp.febric.Models.ProuctModel
 import com.ecomapp.febric.Models.SizeModel
 import com.ecomapp.febric.Repositories.Response
@@ -35,7 +39,6 @@ class SelectCategories : AppCompatActivity() {
     var selectedSubCat  : String = ""
 
     lateinit var subCatList : ArrayList<SubCatModel>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -43,6 +46,11 @@ class SelectCategories : AppCompatActivity() {
         supportActionBar?.hide()
 
         selectCateViewModel = ViewModelProvider(this,selectCatVMF).get(SelectCateViewModel::class.java)
+
+        val dialogBinding : LoadingDialogBinding = DataBindingUtil.inflate(LayoutInflater.from(this),R.layout.loading_dialog,null,false)
+
+        val loadingDialog = AlertDialog.Builder(this)
+            .setView(dialogBinding.root).create()
 
         selectCateViewModel.LoadHomeBanners()
         selectCateViewModel.bannerData_liveData.observe(this,{
@@ -184,21 +192,25 @@ class SelectCategories : AppCompatActivity() {
         selectCateViewModel.add_liveData.observe(this,{
             when(it){
                 is Response.Sucess -> {
+                    loadingDialog.dismiss()
                     Toast.makeText(this,"Added",Toast.LENGTH_LONG).show()
                     val intent = Intent(this,MainActivity::class.java)
                     startActivity(intent)
                     finishAffinity()
                 }
                 is Response.Error -> {
+                    loadingDialog.dismiss()
                     Toast.makeText(this,it.errorMsg.toString(),Toast.LENGTH_LONG).show()
                 }
                 is Response.Loading -> {
-
+                    loadingDialog.show()
                 }
             }
         })
 
         binding.btnAdd.setOnClickListener {
+
+            loadingDialog.show()
 
             val ProductId : String = System.currentTimeMillis().toString()
             val ProductTitle : String = AddProduct.productTitle
@@ -230,7 +242,28 @@ class SelectCategories : AppCompatActivity() {
 
             val sizeList : ArrayList<SizeModel> = SelectSize.sizeList
 
-            selectCateViewModel.AddNewProduct(selectedParentCat,selectedMainCat,selectedSubCat,prouctModel,sizeList,imageList)
+            val selectedList : ArrayList<String> = ArrayList()
+
+            if(binding.checkboxTop.isChecked){
+                selectedList.add("1")
+            }
+
+            if(binding.checkboxTop2.isChecked){
+                selectedList.add("2")
+            }
+            if(binding.checkboxTop3.isChecked){
+                selectedList.add("3")
+            }
+            if(binding.checkboxTop4.isChecked){
+                selectedList.add("4")
+            }
+            if(binding.checkboxTop5.isChecked){
+                selectedList.add("5")
+            }
+            if(binding.checkboxTop6.isChecked){
+                selectedList.add("6")
+            }
+            selectCateViewModel.AddNewProduct(selectedParentCat,selectedMainCat,selectedSubCat,prouctModel,sizeList,imageList,selectedList)
 
         }
     }

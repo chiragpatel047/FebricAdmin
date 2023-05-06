@@ -54,10 +54,10 @@ class SelectCateViewModel @Inject constructor(val dataRepository: DataRepository
         }
     }
     fun AddNewProduct(parentCatName: String, mainCatName: String,subCatName : String, prouctModel: ProuctModel ,sizeList : ArrayList<SizeModel>,
-                      imageList : ArrayList<ProductImageModel>){
+                      imageList : ArrayList<ProductImageModel>,selectedList : ArrayList<String>){
 
         viewModelScope.async {
-            val result = dataRepository.AddNewProduct(parentCatName, mainCatName,subCatName,prouctModel,sizeList,imageList)
+            val result = dataRepository.AddNewProduct(parentCatName, mainCatName,subCatName,prouctModel,sizeList,imageList,selectedList)
             add_mutableLiveData.postValue(result)
         }
     }

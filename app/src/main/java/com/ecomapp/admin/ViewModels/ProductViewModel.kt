@@ -17,11 +17,21 @@ class ProductViewModel @Inject constructor(val dataRepository: DataRepository) :
     val product_liveData : LiveData<Response<ArrayList<ProuctModel>>>
         get() = product_mutableLiveData
 
+    var delete_mutableLiveData = MutableLiveData<Response<String>>()
+    val delete_liveData : LiveData<Response<String>>
+        get() = delete_mutableLiveData
 
     fun LoadAllProducts(){
         viewModelScope.async {
             val result = dataRepository.LoadAllProducts()
             product_mutableLiveData.postValue(result)
+        }
+    }
+
+    fun deleteProduct(productId : String){
+        viewModelScope.async {
+            val result = dataRepository.deleteProduct(productId)
+            delete_mutableLiveData.postValue(result)
         }
     }
 }
