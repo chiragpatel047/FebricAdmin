@@ -5,9 +5,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.ecomapp.admin.databinding.DeliveryItemSingleBinding
 import com.ecomapp.febric.Models.OrderModel
 import com.ecomapp.admin.R
+import com.ecomapp.admin.databinding.DetailsBottomSheetBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class DeliveryItemAdapter(
     myContext: Context,
@@ -65,15 +68,27 @@ class DeliveryItemAdapter(
 
         holder.itemView.setOnClickListener {
 
-//            val bottomSheetView : DetailsBottomSheetBinding = DataBindingUtil.inflate(LayoutInflater.from(context),R.layout.details_bottom_sheet,null,false)
-//
-//            var bottomSheet = BottomSheetDialog(context,R.style.BottomSheetDialogTheme)
-//            bottomSheet.setContentView(bottomSheetView.root)
-//            bottomSheet.create()
-//
-//            bottomSheet.show()
+            val bottomSheetView : DetailsBottomSheetBinding = DataBindingUtil.inflate(LayoutInflater.from(context),R.layout.details_bottom_sheet,null,false)
 
+            var bottomSheet = BottomSheetDialog(context,R.style.BottomSheetDialogTheme)
+            bottomSheet.setContentView(bottomSheetView.root)
+            bottomSheet.create()
+
+            bottomSheet.show()
+
+            Glide.with(context).load(singleItem.productImage).into(bottomSheetView.itemImage)
+            bottomSheetView.itemSubTitle.text = singleItem.productTitle
+            bottomSheetView.itemColor.text = "Size : " + singleItem.selectedSize
+            bottomSheetView.trackingno6.text = singleItem.productPrice+"₹"
+            bottomSheetView.fullName.text = singleItem.name
+            bottomSheetView.middleAddress.text = singleItem.address
+            bottomSheetView.topAddress.text = singleItem.city+", "+singleItem.state+" "+singleItem.zipCode
+            bottomSheetView.itemPrice.text = singleItem.productPrice+"₹"
+            bottomSheetView.trackingno3.text = singleItem.phoneNO
+
+            bottomSheetView.continueShopping.setOnClickListener {
+                bottomSheet.dismiss()
+            }
         }
     }
-
 }
