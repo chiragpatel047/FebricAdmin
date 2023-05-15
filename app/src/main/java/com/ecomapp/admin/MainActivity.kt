@@ -5,9 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import com.ecomapp.admin.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint()
 class MainActivity : AppCompatActivity() {
-
 
     lateinit var binding: ActivityMainBinding
 
@@ -17,18 +18,27 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
         supportActionBar?.hide()
 
-        binding.banners.setOnClickListener {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.home_framelayout,Home())
+        transaction.commit()
 
+        binding.bottomNavigationView.setOnItemSelectedListener {
+
+            var transaction = supportFragmentManager.beginTransaction()
+
+            when(it.itemId){
+
+                R.id.nav_home ->{
+                    transaction.replace(R.id.home_framelayout,Home())
+                }
+
+                R.id.nav_shop ->{
+                    transaction.replace(R.id.home_framelayout,Orders())
+                }
+            }
+            transaction.commit()
+            return@setOnItemSelectedListener true
         }
 
-        binding.categories.setOnClickListener {
-            val intent = Intent(this,ParentCat::class.java)
-            startActivity(intent)
-        }
-
-        binding.products.setOnClickListener {
-            val intent = Intent(this,Products::class.java)
-            startActivity(intent)
-        }
     }
 }

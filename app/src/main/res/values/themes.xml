@@ -14,4 +14,15 @@
     <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
+
+    <style name="bottom_nav_font"
+        parent="Widget.Design.BottomNavigationView">
+        <item name="fontFamily">@font/poppins_medium</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+    <style name="tab_font" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="fontFamily">@font/poppins_medium</item>
+    </style>
+
 </resources>

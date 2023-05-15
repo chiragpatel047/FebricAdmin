@@ -5,6 +5,8 @@ import com.ecomapp.admin.Models.BannerModel
 import com.ecomapp.admin.Models.MainCatModel
 import com.ecomapp.admin.Models.ProductImageModel
 import com.ecomapp.admin.Models.SubCatModel
+import com.ecomapp.febric.Models.OrderIdModel
+import com.ecomapp.febric.Models.OrderModel
 import com.ecomapp.febric.Models.ProductIdModel
 import com.ecomapp.febric.Models.ProuctModel
 import com.ecomapp.febric.Models.SizeModel
@@ -23,6 +25,7 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
     var mainCatList = ArrayList<MainCatModel>()
     var subCatList = ArrayList<SubCatModel>()
     var AllProductList = ArrayList<ProuctModel>()
+    var ordersList = ArrayList<OrderModel>()
 
     suspend fun LoadHomeBanners() : Response<ArrayList<BannerModel>>{
 
@@ -254,4 +257,134 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
             Response.Error(e.message.toString())
         }
     }
+
+    suspend fun loadOrders(orderCat : String) : Response<ArrayList<OrderModel>>{
+
+        val snapshot = withContext(Dispatchers.IO){
+
+            database.collection(orderCat)
+                .get()
+                .await()
+        }
+
+        var orderIdList = ArrayList<OrderIdModel>()
+
+        val fetching = withContext(Dispatchers.IO){
+            orderIdList.addAll(snapshot.toObjects(OrderIdModel::class.java))
+            val tempList : MutableList<String> = mutableListOf("1","2")
+
+            for(single in orderIdList){
+                tempList.add(single.orderId!!)
+            }
+
+            val snapshot2 = withContext(Dispatchers.IO){
+                database.collection("Orders").whereIn("orderId",tempList).get().await()
+            }
+
+            val fetching2 = withContext(Dispatchers.IO){
+                ordersList.addAll(snapshot2.toObjects(OrderModel::class.java))
+            }
+        }
+
+        return try {
+            Response.Sucess(ordersList)
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
+
+    suspend fun DeliveredOrder(orderId : String, userId : String) : Response<String>{
+
+        val deleteFromPending = withContext(Dispatchers.IO){
+
+            database.collection("PendingOrders").document(orderId)
+                .delete()
+                .await()
+        }
+
+        val addToDelivered = withContext(Dispatchers.IO){
+
+            val order = OrderIdModel(orderId)
+
+            database.collection("DeliveredOrders").document(orderId)
+                .set(order)
+                .await()
+        }
+
+        val userDeleteFromPending = withContext(Dispatchers.IO){
+
+            database.collection("users")
+                .document(userId)
+                .collection("pendingOrders")
+                .document(orderId)
+                .delete()
+                .await()
+        }
+
+        val userAddToDelivered = withContext(Dispatchers.IO){
+
+            val order = OrderIdModel(orderId)
+
+            database.collection("users")
+                .document(userId)
+                .collection("deliveredOrders")
+                .document(orderId)
+                .set(order)
+                .await()
+        }
+
+        return try {
+            Response.Sucess("Success")
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
+
+    suspend fun CancelOrder(orderId : String, userId : String) : Response<String>{
+
+        val deleteFromPending = withContext(Dispatchers.IO){
+
+            database.collection("PendingOrders").document(orderId)
+                .delete()
+                .await()
+        }
+
+        val addToDelivered = withContext(Dispatchers.IO){
+
+            val order = OrderIdModel(orderId)
+
+            database.collection("CancelledOrders").document(orderId)
+                .set(order)
+                .await()
+        }
+
+        val userDeleteFromPending = withContext(Dispatchers.IO){
+
+            database.collection("users")
+                .document(userId)
+                .collection("pendingOrders")
+                .document(orderId)
+                .delete()
+                .await()
+        }
+
+        val userAddToDelivered = withContext(Dispatchers.IO){
+
+            val order = OrderIdModel(orderId)
+
+            database.collection("users")
+                .document(userId)
+                .collection("cancelledOrders")
+                .document(orderId)
+                .set(order)
+                .await()
+        }
+
+        return try {
+            Response.Sucess("Success")
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
+
 }

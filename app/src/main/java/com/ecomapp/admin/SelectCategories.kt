@@ -184,7 +184,6 @@ class SelectCategories : AppCompatActivity() {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-
                 selectedSubCat = binding.subCatSpinner2.selectedItem.toString()
             }
         }
