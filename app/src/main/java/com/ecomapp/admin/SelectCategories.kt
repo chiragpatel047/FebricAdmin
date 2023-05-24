@@ -218,7 +218,7 @@ class SelectCategories : AppCompatActivity() {
             val ProductOldPrice : String = AddProduct.productOldPrice
             val ProductPrice : String = AddProduct.productPrice
             val NoOfRating : String = "0"
-            val Rate : String = "0.0F"
+            val Rate : String = "0"
 
             val imageStringList : ArrayList<String> = AddProductImages.addImageArrayList
             val imageList : ArrayList<ProductImageModel> = ArrayList()
