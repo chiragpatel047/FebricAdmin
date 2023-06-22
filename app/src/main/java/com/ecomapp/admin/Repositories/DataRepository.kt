@@ -18,14 +18,16 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-
 class DataRepository @Inject constructor(val database : FirebaseFirestore,val storage: FirebaseStorage) {
 
     var bannerList  = ArrayList<BannerModel>()
     var mainCatList = ArrayList<MainCatModel>()
     var subCatList = ArrayList<SubCatModel>()
     var AllProductList = ArrayList<ProuctModel>()
+    var productList = ArrayList<ProuctModel>()
+    var productDetail = ProuctModel()
     var ordersList = ArrayList<OrderModel>()
+    var productIdList = ArrayList<ProductIdModel>()
 
     suspend fun LoadHomeBanners() : Response<ArrayList<BannerModel>>{
 
@@ -44,7 +46,101 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
         }
     }
 
+
+    suspend fun UpdateBanners(pos : String,bannerModel: BannerModel) : Response<String>{
+
+        val upload = withContext(Dispatchers.IO){
+            val ref =  storage.reference.child("HomeBanners")
+                .child("cover_"+pos)
+            ref.putFile(Uri.parse(bannerModel.mainImage)).await()
+            ref.downloadUrl.await()
+        }
+
+        val snapshot = withContext(Dispatchers.IO){
+            bannerModel.mainImage = upload.toString()
+            database.collection("HomeBanners")
+                .document(pos)
+                .set(bannerModel).await()
+        }
+
+        return try {
+            Response.Sucess("Success")
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
+
+    suspend fun LoadBannersProducts(loadUsing : String) : Response<ArrayList<ProuctModel>>{
+
+        val snapshot = withContext(Dispatchers.IO){
+            database.collection("HomeBanners")
+                .document(loadUsing)
+                .collection("Products")
+                .get().await()
+        }
+
+        val fetching = withContext(Dispatchers.IO){
+            productIdList.addAll(snapshot.toObjects(ProductIdModel::class.java))
+            val tempList : MutableList<String> = mutableListOf("1","2")
+
+            for(single in productIdList){
+                tempList.add(single.productId!!)
+            }
+
+            val snapshot2 = withContext(Dispatchers.IO){
+                database.collection("AllProducts").whereIn("productId",tempList).get().await()
+            }
+
+            val fetching2 = withContext(Dispatchers.IO){
+                productList.addAll(snapshot2.toObjects(ProuctModel::class.java))
+            }
+        }
+
+        return try {
+            Response.Sucess(productList)
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
+
+    suspend fun LoadProducts(parentCatName : String,mainCatName : String,subCatName : String) : Response<ArrayList<ProuctModel>>{
+
+        val snapshot = withContext(Dispatchers.IO){
+            database.collection("Categories")
+                .document(parentCatName)
+                .collection("MainCategories")
+                .document(mainCatName)
+                .collection("SubCategories")
+                .document(subCatName)
+                .collection("Products").get().await()
+        }
+
+        val fetching = withContext(Dispatchers.IO){
+            productIdList.addAll(snapshot.toObjects(ProductIdModel::class.java))
+            val tempList : MutableList<String> = mutableListOf("1","2")
+
+            for(single in productIdList){
+                tempList.add(single.productId!!)
+            }
+
+            val snapshot2 = withContext(Dispatchers.IO){
+                database.collection("AllProducts").whereIn("productId",tempList).get().await()
+            }
+
+            val fetching2 = withContext(Dispatchers.IO){
+                productList.addAll(snapshot2.toObjects(ProuctModel::class.java))
+            }
+        }
+
+        return try {
+            Response.Sucess(productList)
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
+
     suspend fun LoadMainCategories(catName : String) : Response<ArrayList<MainCatModel>>{
+
 
         val snapshot = withContext(Dispatchers.IO){
             database.collection("Categories")
@@ -79,6 +175,23 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
                 .document(parentCat)
                 .collection("MainCategories")
                 .document(mainCatModel.mainCatName!!).set(mainCatModel).await()
+        }
+
+        return try {
+            Response.Sucess("Success")
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
+
+
+    suspend fun deleteMainCategory(parentCat : String,mainCat : String) :  Response<String>{
+
+        val insert = withContext(Dispatchers.IO){
+            database.collection("Categories")
+                .document(parentCat)
+                .collection("MainCategories")
+                .document(mainCat).delete().await()
         }
 
         return try {
@@ -128,6 +241,28 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
             Response.Error(e.message.toString())
         }
     }
+
+    suspend fun deleteSubCategory(parentCatName : String,mainCatName : String,subCateName : String) :  Response<String>{
+
+        val insert = withContext(Dispatchers.IO){
+
+            database.collection("Categories")
+                .document(parentCatName)
+                .collection("MainCategories")
+                .document(mainCatName)
+                .collection("SubCategories")
+                .document(subCateName)
+                .delete().await()
+        }
+
+        return try {
+            Response.Sucess("Success")
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
+
+
 
     suspend fun LoadAllProducts() : Response<ArrayList<ProuctModel>>{
 
@@ -223,7 +358,6 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
                 .set(productIdModel).await()
         }
 
-
         val insertIntoBanners = withContext(Dispatchers.IO){
 
             val productIdModel : ProductIdModel = ProductIdModel(prouctModel.productId)
@@ -232,7 +366,7 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
                 database.collection("HomeBanners")
                     .document(single)
                     .collection("Products")
-                    .document(productIdModel.ProductId!!)
+                    .document(productIdModel.productId!!)
                     .set(productIdModel).await()
             }
         }
@@ -243,6 +377,77 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
             Response.Error(e.message.toString())
         }
     }
+
+    suspend fun LoadSingleProduct(productId : String) : Response<ProuctModel>{
+
+        val snapshot = withContext(Dispatchers.IO){
+            database.collection("AllProducts")
+                .document(productId)
+                .get().await()
+        }
+
+        val fetching = withContext(Dispatchers.IO){
+            productDetail = snapshot.toObject(ProuctModel::class.java)!!
+        }
+
+        return try {
+            Response.Sucess(productDetail)
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
+    suspend fun updateProduct(prouctModel: ProuctModel) : Response<String> {
+
+        val addIntoAllProduct = withContext(Dispatchers.IO){
+            database.collection("AllProducts")
+                .document(prouctModel.productId!!)
+                .set(prouctModel)
+                .await()
+        }
+        return try {
+            Response.Sucess("success")
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
+
+    suspend fun deleteProductFromBanner(pos : String , productId : String) : Response<String> {
+
+        val product = withContext(Dispatchers.IO){
+            database.collection("HomeBanners")
+                .document(pos)
+                .collection("Products")
+                .document(productId)
+                .delete().await()
+        }
+        return try {
+            Response.Sucess("success")
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
+
+    suspend fun deleteProductFromCat(parentCatName : String,mainCatName : String,subCatName : String, productId : String) : Response<String> {
+
+        val delete = withContext(Dispatchers.IO){
+
+            database.collection("Categories")
+                .document(parentCatName)
+                .collection("MainCategories")
+                .document(mainCatName)
+                .collection("SubCategories")
+                .document(subCatName)
+                .collection("Products")
+                .document(productId)
+                .delete().await()
+        }
+        return try {
+            Response.Sucess("success")
+        }catch (e : Exception){
+            Response.Error(e.message.toString())
+        }
+    }
+
 
     suspend fun deleteProduct(productId : String) : Response<String>{
         val addIntoAllProduct = withContext(Dispatchers.IO){
@@ -386,5 +591,6 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
             Response.Error(e.message.toString())
         }
     }
+
 
 }

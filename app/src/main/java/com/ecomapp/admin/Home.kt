@@ -27,7 +27,8 @@ class Home : Fragment() {
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_home,container,false)
 
         binding.banners.setOnClickListener {
-
+            val intent = Intent(activity,Banners::class.java)
+            startActivity(intent)
         }
 
         binding.categories.setOnClickListener {
@@ -37,6 +38,7 @@ class Home : Fragment() {
 
         binding.products.setOnClickListener {
             val intent = Intent(activity,Products::class.java)
+            intent.putExtra("loadFor","all")
             startActivity(intent)
         }
 

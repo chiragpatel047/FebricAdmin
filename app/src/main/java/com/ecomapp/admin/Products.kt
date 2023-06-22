@@ -28,6 +28,13 @@ class Products : AppCompatActivity() {
     lateinit var productList : ArrayList<ProuctModel>
     lateinit var productAdapter : ProductSimpleAdapter
 
+    var loadFor : String? = ""
+    var loadUsing : String? = ""
+
+    var parentCat : String? = ""
+    var mainCat : String? = ""
+    var subCat : String? = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -36,10 +43,24 @@ class Products : AppCompatActivity() {
 
         productViewModel = ViewModelProvider(this,productVMF).get(ProductViewModel::class.java)
 
-        productViewModel.LoadAllProducts()
+        loadFor = intent.getStringExtra("loadFor")
+
+        loadUsing = intent.getStringExtra("loadUsing")
+
+        parentCat = intent.getStringExtra("parentCat")
+        mainCat = intent.getStringExtra("mainCat")
+        subCat = intent.getStringExtra("subCat")
+
+        if(loadFor=="banner"){
+            productViewModel.LoadBannersProducts(loadUsing!!)
+        }else if(loadFor=="all"){
+            productViewModel.LoadAllProducts()
+        }else if(loadFor=="cat"){
+            productViewModel.LoadProducts(parentCat!!, mainCat!!,subCat!!)
+        }
 
         productList = ArrayList()
-        productAdapter = ProductSimpleAdapter(this,productList,::deleteItem)
+        productAdapter = ProductSimpleAdapter(this,productList,::deleteItem,::deleteFor,::deleteProductFromBanner,::deleteProductFromCat)
 
         binding.productsRecv.layoutManager = LinearLayoutManager(this)
         binding.productsRecv.adapter = productAdapter
@@ -71,9 +92,65 @@ class Products : AppCompatActivity() {
                 }
             }
         })
+
+        productViewModel.banner_product_liveData.observe(this,{
+
+            when(it){
+                is Response.Sucess -> {
+                    productList.clear()
+
+                    for(singleitem in it.data!!){
+                        productList.add(0,singleitem)
+                    }
+
+                    it.data.clear()
+                    productAdapter.notifyDataSetChanged()
+                }
+
+                is Response.Error -> {
+
+                }
+                is Response.Loading ->{
+
+                }
+            }
+        })
+
+        productViewModel.cat_product_liveData.observe(this,{
+
+            when(it){
+                is Response.Sucess -> {
+                    productList.clear()
+
+                    for(singleitem in it.data!!){
+                        productList.add(0,singleitem)
+                    }
+
+                    it.data.clear()
+                    productAdapter.notifyDataSetChanged()
+                }
+
+                is Response.Error -> {
+
+                }
+                is Response.Loading ->{
+
+                }
+            }
+        })
+    }
+
+    fun deleteFor() : String{
+        return loadFor!!
     }
 
     fun deleteItem(productId : String) {
         productViewModel.deleteProduct(productId)
+    }
+    fun deleteProductFromBanner(productId : String){
+       productViewModel.deleteProductFromBanner(loadUsing!!,productId)
+    }
+    fun deleteProductFromCat(productId : String){
+        productViewModel.deleteProductFromCat(parentCat!!,mainCat!!,subCat!!,productId)
     }
 }

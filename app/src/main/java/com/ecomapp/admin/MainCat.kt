@@ -42,7 +42,7 @@ class MainCat : AppCompatActivity() {
         mainCatViewModel = ViewModelProvider(this,mainCatVMF).get(MainCatViewModel::class.java)
 
         mainCatList = ArrayList()
-        mainCatAdapter = MainCatAdapter(this,mainCatList,::getParentCat)
+        mainCatAdapter = MainCatAdapter(this,mainCatList,::getParentCat,::deleteMainCat)
 
         binding.catRecv.layoutManager = LinearLayoutManager(this)
         binding.catRecv.adapter = mainCatAdapter
@@ -77,6 +77,10 @@ class MainCat : AppCompatActivity() {
 
     fun getParentCat() : String{
         return parentCatName!!
+    }
+
+    fun deleteMainCat(parentCat : String,mainCat : String){
+        mainCatViewModel.deleteMainCategory(parentCat,mainCat)
     }
 
     override fun onResume() {

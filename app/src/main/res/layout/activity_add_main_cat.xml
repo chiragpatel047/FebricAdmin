@@ -78,7 +78,7 @@
                     android:id="@+id/cat_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="Category name "
+                    android:hint="Name "
                     android:textColorHint="@color/second_font_color"
                     app:boxBackgroundMode="none"
                     app:hintTextColor="@color/second_font_color"

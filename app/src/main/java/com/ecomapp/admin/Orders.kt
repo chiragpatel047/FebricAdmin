@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -63,6 +64,9 @@ class Orders : Fragment() {
         binding.topTabBar.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 orderList.clear()
+                binding.loadingAnim2.visibility = View.VISIBLE
+                binding.noFoundText2.visibility = View.GONE
+
                 when(tab?.position){
                     0 ->{
                         selectedTab  = "PendingOrders"
@@ -84,8 +88,10 @@ class Orders : Fragment() {
                         mainViewModel.loadOrders(selectedTab)
                     }
                 }
+
                 deliveryItemAdapter.notifyDataSetChanged()
                 deliveredAdapter.notifyDataSetChanged()
+
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -107,6 +113,13 @@ class Orders : Fragment() {
                         orderList.add(0,singleitem)
                     }
 
+                    binding.loadingAnim2.visibility = View.GONE
+
+                    if(orderList.isEmpty()){
+                        binding.noFoundText2.visibility = View.VISIBLE
+                    }else{
+                        binding.noFoundText2.visibility = View.GONE
+                    }
                     it.data.clear()
                     deliveryItemAdapter.notifyDataSetChanged()
                     deliveredAdapter.notifyDataSetChanged()

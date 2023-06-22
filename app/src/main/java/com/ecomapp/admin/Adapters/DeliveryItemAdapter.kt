@@ -56,14 +56,16 @@ class DeliveryItemAdapter(
 
         holder.devliveryItemBinding.delivered.setOnClickListener {
             deliveryItemArrayList.remove(singleItem)
-            notifyDataSetChanged()
             deliveredOrderFun.invoke(singleItem.orderId!!, singleItem.userId!!)
+            notifyDataSetChanged()
         }
 
         holder.devliveryItemBinding.cancel.setOnClickListener {
             deliveryItemArrayList.remove(singleItem)
-            notifyDataSetChanged()
             cancelOrderFun.invoke(singleItem.orderId!!, singleItem.userId!!)
+            notifyItemRemoved(position)
+            notifyDataSetChanged()
+
         }
 
         holder.itemView.setOnClickListener {
@@ -91,4 +93,5 @@ class DeliveryItemAdapter(
             }
         }
     }
+
 }

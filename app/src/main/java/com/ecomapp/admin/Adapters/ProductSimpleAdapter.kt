@@ -1,20 +1,24 @@
 package com.ecomapp.febric.Adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.ecomapp.admin.AddProduct
 import com.ecomapp.admin.R
 import com.ecomapp.admin.databinding.ProductSimpleSingleItemBinding
 import com.ecomapp.febric.Models.ProuctModel
-import kotlin.math.sin
 
 class ProductSimpleAdapter(
     myContext: Context,
     myItemModel: ArrayList<ProuctModel>,
-    val deleteItem: (String) -> Unit
+    val deleteItem: (String) -> Unit,
+    val deleteForFun: () -> String,
+    val deleteProductFromBannerFun: (String) -> Unit,
+    val deleteProductFromCatFun : (String) -> Unit
 ) : RecyclerView.Adapter<ProductSimpleAdapter.ProductSimpleViewHolder>() {
 
     var context = myContext
@@ -58,15 +62,25 @@ class ProductSimpleAdapter(
         holder.productSimpleItemBinding.itemNewPrice.text = singleItem.productPrice+"₹"
 
         holder.productSimpleItemBinding.removeImage.setOnClickListener {
-            deleteItem.invoke(singleItem.productId!!)
+
+            val deleteFor = deleteForFun.invoke()
+
             productList.remove(singleItem)
             notifyDataSetChanged()
+
+            if(deleteFor=="banner"){
+                deleteProductFromBannerFun.invoke(singleItem.productId!!)
+            }else if(deleteFor=="all"){
+                deleteItem.invoke(singleItem.productId!!)
+            }else if(deleteFor=="cat"){
+                deleteProductFromCatFun.invoke(singleItem.productId!!)
+            }
         }
 
-//        holder.itemView.setOnClickListener {
-//            val intent = Intent(context, FullProduct::class.java)
-//            intent.putExtra("productId",singleItem.ProductId)
-//            context.startActivity(intent)
-//        }
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, AddProduct::class.java)
+            intent.putExtra("productId",singleItem.productId)
+            context.startActivity(intent)
+        }
     }
 }

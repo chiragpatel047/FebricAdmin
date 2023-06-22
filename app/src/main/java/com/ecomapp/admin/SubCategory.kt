@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ecomapp.admin.Adapters.SubCatAdapter
 import com.ecomapp.admin.Factories.SubCatVMF
 import com.ecomapp.admin.Models.SubCatModel
-import com.ecomapp.admin.R
 import com.ecomapp.admin.ViewModels.SubCatViewModel
 import com.ecomapp.admin.databinding.ActivitySubCategoryBinding
 import com.ecomapp.febric.Repositories.Response
@@ -46,7 +45,7 @@ class SubCategory : AppCompatActivity() {
         subCatViewModel = ViewModelProvider(this,subCatVMF).get(SubCatViewModel::class.java)
 
         subCatList = ArrayList()
-        subCatAdapter = SubCatAdapter(this,subCatList,::getParentCat,::getMainCat)
+        subCatAdapter = SubCatAdapter(this,subCatList,::getParentCat,::getMainCat,::deleteSubCat)
 
         binding.subCatRecv.layoutManager = LinearLayoutManager(this)
         binding.subCatRecv.adapter = subCatAdapter
@@ -84,6 +83,10 @@ class SubCategory : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         subCatViewModel.LoadSubCatigories(parentCatName!!, mainCatName!!)
+    }
+
+    fun deleteSubCat(parentCatName: String, mainCatName: String,subCatName : String){
+        subCatViewModel.deleteSubCategory(parentCatName,mainCatName,subCatName)
     }
 
     fun getParentCat() : String{

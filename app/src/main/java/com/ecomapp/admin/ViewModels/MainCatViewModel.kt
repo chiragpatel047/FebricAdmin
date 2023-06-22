@@ -16,6 +16,10 @@ class MainCatViewModel @Inject constructor(val dataRepository: DataRepository) :
     val mainCat_liveData : LiveData<Response<ArrayList<MainCatModel>>>
         get() = mainCat_mutableLiveData
 
+    var delete_mutableLiveData = MutableLiveData<Response<String>>()
+    val delete_liveData : LiveData<Response<String>>
+        get() = delete_mutableLiveData
+
 
     fun LoadMainCategories(catName : String){
         viewModelScope.async {
@@ -24,4 +28,10 @@ class MainCatViewModel @Inject constructor(val dataRepository: DataRepository) :
         }
     }
 
+    fun deleteMainCategory(parentCat : String,mainCat : String){
+        viewModelScope.async {
+            val result = dataRepository.deleteMainCategory(parentCat,mainCat)
+            delete_mutableLiveData.postValue(result)
+        }
+    }
 }

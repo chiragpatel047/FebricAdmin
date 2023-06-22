@@ -1,6 +1,6 @@
 package com.ecomapp.admin.Models
 
 data class BannerModel(
-    val MainImage : String? = null,
-    val MainTitle : String? = null
+    var mainImage : String? = null,
+    val mainTitle : String? = null
 )

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ecomapp.admin.Models.SubCatModel
+import com.ecomapp.admin.Products
 import com.ecomapp.admin.R
 import com.ecomapp.admin.databinding.SubCategorySingleBinding
 
@@ -14,7 +15,8 @@ class SubCatAdapter(
     myContext: Context,
     mySubCatList: ArrayList<SubCatModel>,
     val getParentCat: () -> String,
-    val getMainCat: () -> String
+    val getMainCat: () -> String,
+    val deleteSubCatFun: (String, String, String) -> Unit
 ) : RecyclerView.Adapter<SubCatAdapter.SubCatViewHolder>() {
 
     var context = myContext
@@ -49,16 +51,27 @@ class SubCatAdapter(
 
         holder.subCatBinding.subCatName.text = singleCat.subCatName
 
+        holder.subCatBinding.removeImage.setOnClickListener {
+            val parentCat : String = getParentCat.invoke()
+            val mainCat : String = getMainCat.invoke()
+
+            subCatList.remove(singleCat)
+            notifyDataSetChanged()
+
+            deleteSubCatFun.invoke(parentCat,mainCat, singleCat.subCatName!!)
+        }
+
         holder.itemView.setOnClickListener {
 
             val parentCat : String = getParentCat.invoke()
             val mainCat : String = getMainCat.invoke()
 
-//            val intent = Intent(context, Products::class.java)
-//            intent.putExtra("parentCat",parentCat)
-//            intent.putExtra("mainCat",mainCat)
-//            intent.putExtra("subCat",singleCat.subCatName)
-//            context.startActivity(intent)
+            val intent = Intent(context, Products::class.java)
+            intent.putExtra("parentCat",parentCat)
+            intent.putExtra("loadFor","cat")
+            intent.putExtra("mainCat",mainCat)
+            intent.putExtra("subCat",singleCat.subCatName)
+            context.startActivity(intent)
 
         }
     }

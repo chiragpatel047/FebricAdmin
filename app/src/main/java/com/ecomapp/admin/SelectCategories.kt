@@ -52,17 +52,19 @@ class SelectCategories : AppCompatActivity() {
         val loadingDialog = AlertDialog.Builder(this)
             .setView(dialogBinding.root).create()
 
+        loadingDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
         selectCateViewModel.LoadHomeBanners()
         selectCateViewModel.bannerData_liveData.observe(this,{
 
             when(it){
                 is Response.Sucess ->{
-                    binding.checkboxTop.text = it.data?.get(0)?.MainTitle.toString()
-                    binding.checkboxTop2.text = it.data?.get(1)?.MainTitle.toString()
-                    binding.checkboxTop3.text = it.data?.get(2)?.MainTitle.toString()
-                    binding.checkboxTop4.text = it.data?.get(3)?.MainTitle.toString()
-                    binding.checkboxTop5.text = it.data?.get(4)?.MainTitle.toString()
-                    binding.checkboxTop5.text = it.data?.get(5)?.MainTitle.toString()
+                    binding.checkboxTop.text = it.data?.get(0)?.mainTitle.toString()
+                    binding.checkboxTop2.text = it.data?.get(1)?.mainTitle.toString()
+                    binding.checkboxTop3.text = it.data?.get(2)?.mainTitle.toString()
+                    binding.checkboxTop4.text = it.data?.get(3)?.mainTitle.toString()
+                    binding.checkboxTop5.text = it.data?.get(4)?.mainTitle.toString()
+                    binding.checkboxTop6.text = it.data?.get(5)?.mainTitle.toString()
                 }
 
                 is Response.Error -> {

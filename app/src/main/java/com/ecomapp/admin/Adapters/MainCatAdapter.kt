@@ -16,6 +16,7 @@ class MainCatAdapter(
     myContext: Context,
     myMaimCatList: ArrayList<MainCatModel>,
     val onCatClicked: () -> String,
+    val deleteMainCatFun: (String, String) -> Unit,
 ) : RecyclerView.Adapter<MainCatAdapter.MainCatViewHolder>() {
 
     var context = myContext
@@ -49,6 +50,12 @@ class MainCatAdapter(
 
         Glide.with(context).load(singleMainCat.mainCatImage).into(holder.mainCatBinding.mainCatItemImage)
         holder.mainCatBinding.mainCatItemName.text = singleMainCat.mainCatName
+
+        holder.mainCatBinding.removeImage.setOnClickListener {
+            mainCatList.remove(singleMainCat)
+            notifyDataSetChanged()
+            deleteMainCatFun.invoke(onCatClicked.invoke(), singleMainCat.mainCatName!!)
+        }
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, SubCategory::class.java)

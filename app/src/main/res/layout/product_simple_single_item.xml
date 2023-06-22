@@ -39,12 +39,12 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="3dp"
                     android:layout_marginEnd="3dp"
-                    android:padding="10dp"
+                    android:padding="12dp"
                     android:visibility="visible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/delete"
-                    app:tint="@color/main_red" />
+                    app:srcCompat="@drawable/cancel"
+                    app:tint="@color/second_font_color" />
 
 
                 <ImageView
@@ -143,6 +143,21 @@
                     android:textColor="@color/main_red"
                     android:textSize="16sp"
                     app:layout_constraintStart_toEndOf="@+id/item_strike"
+                    app:layout_constraintTop_toTopOf="@+id/item_old_price" />
+
+                <TextView
+                    android:id="@+id/item_new_price2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
+                    android:text="Edit"
+                    android:textColor="@color/main_red"
+                    android:textSize="13sp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/item_old_price" />
 
                 <TextView

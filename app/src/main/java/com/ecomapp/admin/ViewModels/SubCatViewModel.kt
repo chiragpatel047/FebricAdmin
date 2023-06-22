@@ -16,11 +16,21 @@ class SubCatViewModel @Inject constructor(val dataRepository: DataRepository) : 
     val subCat_liveData: LiveData<Response<ArrayList<SubCatModel>>>
         get() = subCat_mutableLiveData
 
+    var delete_mutableLiveData = MutableLiveData<Response<String>>()
+    val delete_liveData: LiveData<Response<String>>
+        get() = delete_mutableLiveData
+
     fun LoadSubCatigories(parentCatName: String, mainCatName: String) {
         viewModelScope.async {
             val result = dataRepository.LoadSubCatigories(parentCatName, mainCatName)
             subCat_mutableLiveData.postValue(result)
         }
-
     }
+    fun deleteSubCategory(parentCatName: String, mainCatName: String,subCatName : String) {
+        viewModelScope.async {
+            val result = dataRepository.deleteSubCategory(parentCatName, mainCatName,subCatName)
+            delete_mutableLiveData.postValue(result)
+        }
+    }
+
 }
