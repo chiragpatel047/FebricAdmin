@@ -3,6 +3,7 @@ package com.ecomapp.admin
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -65,6 +66,13 @@ class SubCategory : AppCompatActivity() {
                     subCatList.addAll(it.data!!)
                     it.data.clear()
                     subCatAdapter.notifyDataSetChanged()
+
+                    binding.loadingAnim5.visibility = View.GONE
+                    if(subCatList.isEmpty()){
+                        binding.noFoundText5.visibility = View.VISIBLE
+                    }else{
+                        binding.noFoundText5.visibility = View.GONE
+                    }
                 }
 
                 is Response.Error -> {

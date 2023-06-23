@@ -48,6 +48,11 @@ class SizeAdapter(
 
         holder.subCatBinding.subCatName.text = singleCat.SizeName
 
+        holder.subCatBinding.removeImage.setOnClickListener {
+            subCatList.remove(singleCat)
+            notifyDataSetChanged()
+        }
+
         holder.itemView.setOnClickListener {
 
 //            val intent = Intent(context, Products::class.java)

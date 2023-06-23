@@ -2,6 +2,7 @@ package com.ecomapp.admin
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -45,10 +46,18 @@ class Banners : AppCompatActivity() {
         bannerViewModel.banner_liveData.observe(this,{
             when(it){
                 is Response.Sucess -> {
+
                     bannerList.clear()
                     bannerList.addAll(it.data!!)
                     bannerAdapter.notifyDataSetChanged()
+                    binding.loadingAnim.visibility = View.GONE
                     it.data.clear()
+
+                    if(bannerList.isEmpty()){
+                        binding.noFoundText.visibility = View.VISIBLE
+                    }else{
+                        binding.noFoundText.visibility = View.GONE
+                    }
                 }
                 is Response.Error -> {
 

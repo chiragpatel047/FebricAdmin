@@ -4,11 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ecomapp.admin.Models.SubCatModel
 import com.ecomapp.admin.Products
 import com.ecomapp.admin.R
+import com.ecomapp.admin.databinding.DeleteDialogBinding
 import com.ecomapp.admin.databinding.SubCategorySingleBinding
 
 class SubCatAdapter(
@@ -52,13 +54,31 @@ class SubCatAdapter(
         holder.subCatBinding.subCatName.text = singleCat.subCatName
 
         holder.subCatBinding.removeImage.setOnClickListener {
-            val parentCat : String = getParentCat.invoke()
-            val mainCat : String = getMainCat.invoke()
 
-            subCatList.remove(singleCat)
-            notifyDataSetChanged()
+            val dialogBinding : DeleteDialogBinding = DataBindingUtil.inflate(LayoutInflater.from(context),R.layout.delete_dialog,null,false)
 
-            deleteSubCatFun.invoke(parentCat,mainCat, singleCat.subCatName!!)
+            val alertDialog = AlertDialog.Builder(context)
+                .setView(dialogBinding.root).create()
+
+            alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            alertDialog.show()
+
+            dialogBinding.btnYes.setOnClickListener {
+                alertDialog.dismiss()
+
+                val parentCat : String = getParentCat.invoke()
+                val mainCat : String = getMainCat.invoke()
+
+                subCatList.remove(singleCat)
+                notifyDataSetChanged()
+
+                deleteSubCatFun.invoke(parentCat,mainCat, singleCat.subCatName!!)
+            }
+
+            dialogBinding.btnDiscard.setOnClickListener {
+                alertDialog.dismiss()
+            }
+
         }
 
         holder.itemView.setOnClickListener {

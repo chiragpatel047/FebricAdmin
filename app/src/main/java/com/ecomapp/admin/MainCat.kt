@@ -3,6 +3,7 @@ package com.ecomapp.admin
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -57,6 +58,13 @@ class MainCat : AppCompatActivity() {
 
                     mainCatAdapter.notifyDataSetChanged()
 
+                    binding.loadingAnim4.visibility = View.GONE
+
+                    if(mainCatList.isEmpty()){
+                        binding.noFoundText4.visibility = View.VISIBLE
+                    }else{
+                        binding.noFoundText4.visibility = View.GONE
+                    }
                 }
 
                 is Response.Error ->{

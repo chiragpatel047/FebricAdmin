@@ -4,11 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ecomapp.admin.AddProduct
 import com.ecomapp.admin.R
+import com.ecomapp.admin.databinding.DeleteDialogBinding
+import com.ecomapp.admin.databinding.LoadingDialogBinding
 import com.ecomapp.admin.databinding.ProductSimpleSingleItemBinding
 import com.ecomapp.febric.Models.ProuctModel
 
@@ -63,17 +66,33 @@ class ProductSimpleAdapter(
 
         holder.productSimpleItemBinding.removeImage.setOnClickListener {
 
-            val deleteFor = deleteForFun.invoke()
+            val dialogBinding : DeleteDialogBinding = DataBindingUtil.inflate(LayoutInflater.from(context),R.layout.delete_dialog,null,false)
 
-            productList.remove(singleItem)
-            notifyDataSetChanged()
+            val alertDialog = AlertDialog.Builder(context)
+                .setView(dialogBinding.root).create()
 
-            if(deleteFor=="banner"){
-                deleteProductFromBannerFun.invoke(singleItem.productId!!)
-            }else if(deleteFor=="all"){
-                deleteItem.invoke(singleItem.productId!!)
-            }else if(deleteFor=="cat"){
-                deleteProductFromCatFun.invoke(singleItem.productId!!)
+            alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            alertDialog.show()
+
+            dialogBinding.btnYes.setOnClickListener {
+                alertDialog.dismiss()
+
+                val deleteFor = deleteForFun.invoke()
+
+                productList.remove(singleItem)
+                notifyDataSetChanged()
+
+                if(deleteFor=="banner"){
+                    deleteProductFromBannerFun.invoke(singleItem.productId!!)
+                }else if(deleteFor=="all"){
+                    deleteItem.invoke(singleItem.productId!!)
+                }else if(deleteFor=="cat"){
+                    deleteProductFromCatFun.invoke(singleItem.productId!!)
+                }
+            }
+
+            dialogBinding.btnDiscard.setOnClickListener {
+                alertDialog.dismiss()
             }
         }
 

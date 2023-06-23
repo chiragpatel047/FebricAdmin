@@ -3,6 +3,7 @@ package com.ecomapp.admin
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -82,6 +83,13 @@ class Products : AppCompatActivity() {
                     
                     it.data.clear()
                     productAdapter.notifyDataSetChanged()
+                    binding.loadingAnim3.visibility = View.GONE
+
+                    if(productList.isEmpty()){
+                        binding.noFoundText3.visibility = View.VISIBLE
+                    }else{
+                        binding.noFoundText3.visibility = View.GONE
+                    }
                 }
 
                 is Response.Error -> {
@@ -105,6 +113,13 @@ class Products : AppCompatActivity() {
 
                     it.data.clear()
                     productAdapter.notifyDataSetChanged()
+                    binding.loadingAnim3.visibility = View.GONE
+
+                    if(productList.isEmpty()){
+                        binding.noFoundText3.visibility = View.VISIBLE
+                    }else{
+                        binding.noFoundText3.visibility = View.GONE
+                    }
                 }
 
                 is Response.Error -> {
@@ -128,6 +143,13 @@ class Products : AppCompatActivity() {
 
                     it.data.clear()
                     productAdapter.notifyDataSetChanged()
+                    binding.loadingAnim3.visibility = View.GONE
+
+                    if(productList.isEmpty()){
+                        binding.noFoundText3.visibility = View.VISIBLE
+                    }else{
+                        binding.noFoundText3.visibility = View.GONE
+                    }
                 }
 
                 is Response.Error -> {
