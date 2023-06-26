@@ -52,6 +52,8 @@ class SelectCategories : AppCompatActivity() {
         val loadingDialog = AlertDialog.Builder(this)
             .setView(dialogBinding.root).create()
 
+        loadingDialog.setCancelable(false)
+
         loadingDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         selectCateViewModel.LoadHomeBanners()
@@ -77,7 +79,7 @@ class SelectCategories : AppCompatActivity() {
         })
 
         val ParentCatSpinnerAdapter =
-            ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1)
+            ArrayAdapter<String>(this, R.layout.spinner_view)
 
         ParentCatSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
@@ -89,16 +91,16 @@ class SelectCategories : AppCompatActivity() {
         ParentCatSpinnerAdapter.notifyDataSetChanged()
 
         val MainCatSpinnerAdapter =
-            ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1)
+            ArrayAdapter<String>(this, R.layout.spinner_view)
 
-        ParentCatSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        MainCatSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         binding.subCatSpinner.adapter = MainCatSpinnerAdapter
         MainCatSpinnerAdapter.add("Select sub category")
         MainCatSpinnerAdapter.notifyDataSetChanged()
 
         val SubCatSpinnerAdapter =
-            ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, android.R.id.text1)
+            ArrayAdapter<String>(this, R.layout.spinner_view)
 
         SubCatSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 

@@ -48,6 +48,20 @@
 
 
                 <ImageView
+                    android:id="@+id/remove_image2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="-28dp"
+                    android:layout_marginBottom="3dp"
+                    android:padding="10dp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@+id/item_new_price2"
+                    app:layout_constraintEnd_toStartOf="@+id/item_new_price2"
+                    app:layout_constraintTop_toTopOf="@+id/item_new_price2"
+                    app:srcCompat="@drawable/edit"
+                    app:tint="@color/main_red" />
+
+                <ImageView
                     android:id="@+id/item_image"
                     android:layout_width="130dp"
                     android:layout_height="0dp"
@@ -109,6 +123,7 @@
                     android:layout_height="0dp"
                     android:layout_marginTop="5dp"
                     android:progressTint="@color/rating_color"
+                    android:progressBackgroundTint="@color/second_font_color"
                     android:rating="3.5"
                     android:secondaryProgressTint="@color/rating_color"
                     app:layout_constraintStart_toStartOf="@+id/item_name"
@@ -152,7 +167,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
                     android:fontFamily="@font/poppins_medium"
-                    android:paddingLeft="3dp"
+                    android:paddingLeft="20dp"
                     android:paddingRight="3dp"
                     android:text="Edit"
                     android:textColor="@color/main_red"

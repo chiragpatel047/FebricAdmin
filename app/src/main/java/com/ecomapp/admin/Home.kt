@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.ecomapp.admin.databinding.FragmentHomeBinding
 
-
 class Home : Fragment() {
 
     lateinit var binding : FragmentHomeBinding

@@ -55,6 +55,7 @@ class BannerAdapter(myContext : Context , myList : ArrayList<BannerModel> )
 
         holder.mainCategorySingleBinding.mainCatItemName.text = singleItem.mainTitle
         holder.mainCategorySingleBinding.editCover.visibility = View.VISIBLE
+        holder.mainCategorySingleBinding.removeImage3.visibility = View.VISIBLE
         holder.mainCategorySingleBinding.removeImage.visibility = View.GONE
 
         holder.itemView.setOnClickListener{
