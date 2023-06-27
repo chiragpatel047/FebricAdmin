@@ -59,8 +59,10 @@ class ProductSimpleAdapter(
         Glide.with(context).load(singleItem.productMainImage).into(holder.productSimpleItemBinding.itemImage)
         holder.productSimpleItemBinding.itemText.text = singleItem.productTitle
         holder.productSimpleItemBinding.itemName.text = singleItem.productSubTitle
-        holder.productSimpleItemBinding.itemRating.rating = singleItem.rate?.toFloatOrNull()!!
-        holder.productSimpleItemBinding.itemNumberOfRating.text = "("+singleItem.noOfRating+")"
+
+        holder.productSimpleItemBinding.itemRating.rating = singleItem.rate!!
+        holder.productSimpleItemBinding.itemNumberOfRating.text = "("+singleItem.noOfRating.toString().replace(".0","").toString()+")"
+
         holder.productSimpleItemBinding.itemOldPrice.text = singleItem.productOldPrice+"₹"
         holder.productSimpleItemBinding.itemNewPrice.text = singleItem.productPrice+"₹"
 

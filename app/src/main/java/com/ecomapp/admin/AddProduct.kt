@@ -30,8 +30,9 @@ class AddProduct : AppCompatActivity() {
     lateinit var addProductVMF: AddProductVMF
 
     var productMainImage : String = ""
-    var noOfRating : String = ""
-    var rate : String = ""
+    var noOfRating : Float = 0F
+    var rate : Float = 0F
+
     companion object{
         var productTitle : String = ""
         var productSubTitle : String = ""

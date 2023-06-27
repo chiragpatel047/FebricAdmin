@@ -8,7 +8,7 @@ data class ProuctModel(
     val productOldPrice : String? = null,
     val productPrice : String? = null,
     var productMainImage : String? = null,
-    val noOfRating : String? = null,
-    val rate : String? = null
+    val noOfRating : Float? = null,
+    val rate : Float? = null
 
 )
