@@ -12,6 +12,7 @@ import com.ecomapp.febric.Models.ProuctModel
 import com.ecomapp.febric.Models.SizeModel
 import com.ecomapp.febric.Repositories.Response
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -71,41 +72,51 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
     }
 
     suspend fun LoadBannersProducts(loadUsing : String) : Response<ArrayList<ProuctModel>>{
-
-        val snapshot = withContext(Dispatchers.IO){
+        val snapshot = withContext(Dispatchers.IO) {
             database.collection("HomeBanners")
                 .document(loadUsing)
                 .collection("Products")
                 .get().await()
         }
 
-        val fetching = withContext(Dispatchers.IO){
-            productIdList.addAll(snapshot.toObjects(ProductIdModel::class.java))
-            val tempList : MutableList<String> = mutableListOf("1","2")
 
-            for(single in productIdList){
-                tempList.add(single.productId!!)
+        val productIds = ArrayList<String>()
+
+        val fetching = withContext(Dispatchers.IO) {
+
+            for (document in snapshot.getDocuments()) {
+                val productId = document.getString("productId")
+                productIds.add(productId!!)
             }
+        }
 
-            val snapshot2 = withContext(Dispatchers.IO){
-                database.collection("AllProducts").whereIn("productId",tempList).get().await()
-            }
+        val snapshot2 = withContext(Dispatchers.IO) {
+            database.collection("AllProducts")
+                .orderBy("productId", Query.Direction.DESCENDING)
+                .get().await()
+        }
 
-            val fetching2 = withContext(Dispatchers.IO){
-                productList.addAll(snapshot2.toObjects(ProuctModel::class.java))
+        val fetching2 = withContext(Dispatchers.IO) {
+            for (document in snapshot2.getDocuments()) {
+                val productId = document.getString("productId")
+                for (favID in productIds) {
+                    if (favID.equals(productId)) {
+                        productList.add(document.toObject(ProuctModel::class.java)!!)
+                    }
+                }
             }
         }
 
         return try {
             Response.Sucess(productList)
-        }catch (e : Exception){
+        } catch (e: Exception) {
             Response.Error(e.message.toString())
         }
     }
 
     suspend fun LoadProducts(parentCatName : String,mainCatName : String,subCatName : String) : Response<ArrayList<ProuctModel>>{
 
-        val snapshot = withContext(Dispatchers.IO){
+        val snapshot = withContext(Dispatchers.IO) {
             database.collection("Categories")
                 .document(parentCatName)
                 .collection("MainCategories")
@@ -115,26 +126,36 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
                 .collection("Products").get().await()
         }
 
-        val fetching = withContext(Dispatchers.IO){
-            productIdList.addAll(snapshot.toObjects(ProductIdModel::class.java))
-            val tempList : MutableList<String> = mutableListOf("1","2")
 
-            for(single in productIdList){
-                tempList.add(single.productId!!)
-            }
+        val productIds = ArrayList<String>()
 
-            val snapshot2 = withContext(Dispatchers.IO){
-                database.collection("AllProducts").whereIn("productId",tempList).get().await()
-            }
+        val fetching = withContext(Dispatchers.IO) {
 
-            val fetching2 = withContext(Dispatchers.IO){
-                productList.addAll(snapshot2.toObjects(ProuctModel::class.java))
+            for (document in snapshot.getDocuments()) {
+                val productId = document.getString("productId")
+                productIds.add(productId!!)
             }
         }
 
+
+        val snapshot2 = withContext(Dispatchers.IO) {
+            database.collection("AllProducts").get().await()
+        }
+        val fetching2 = withContext(Dispatchers.IO) {
+            for (document in snapshot2.getDocuments()) {
+                val productId = document.getString("productId")
+                for (id in productIds) {
+                    if (id.equals(productId)) {
+                        productList.add(document.toObject(ProuctModel::class.java)!!)
+                    }
+                }
+            }
+        }
+
+
         return try {
             Response.Sucess(productList)
-        }catch (e : Exception){
+        } catch (e: Exception) {
             Response.Error(e.message.toString())
         }
     }
@@ -261,7 +282,6 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
             Response.Error(e.message.toString())
         }
     }
-
 
 
     suspend fun LoadAllProducts() : Response<ArrayList<ProuctModel>>{
@@ -448,7 +468,6 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
         }
     }
 
-
     suspend fun deleteProduct(productId : String) : Response<String>{
         val addIntoAllProduct = withContext(Dispatchers.IO){
             database.collection("AllProducts")
@@ -465,31 +484,35 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
 
     suspend fun loadOrders(orderCat : String) : Response<ArrayList<OrderModel>>{
 
-        val snapshot = withContext(Dispatchers.IO){
-
+        val snapshot = withContext(Dispatchers.IO) {
             database.collection(orderCat)
-                .get()
-                .await()
+                .get().await()
         }
 
-        var orderIdList = ArrayList<OrderIdModel>()
+        val orderIds = ArrayList<String>()
 
-        val fetching = withContext(Dispatchers.IO){
-            orderIdList.addAll(snapshot.toObjects(OrderIdModel::class.java))
-            val tempList : MutableList<String> = mutableListOf("1","2")
+        val fetching = withContext(Dispatchers.IO) {
 
-            for(single in orderIdList){
-                tempList.add(single.orderId!!)
-            }
-
-            val snapshot2 = withContext(Dispatchers.IO){
-                database.collection("Orders").whereIn("orderId",tempList).get().await()
-            }
-
-            val fetching2 = withContext(Dispatchers.IO){
-                ordersList.addAll(snapshot2.toObjects(OrderModel::class.java))
+            for (document in snapshot.getDocuments()) {
+                val orderId = document.getString("orderId")
+                orderIds.add(orderId!!)
             }
         }
+        val snapshot2 = withContext(Dispatchers.IO) {
+            database.collection("Orders").get().await()
+        }
+
+        val fetching2 = withContext(Dispatchers.IO) {
+            for (document in snapshot2.getDocuments()) {
+                val orderId = document.getString("orderId")
+                for (id in orderIds) {
+                    if (id.equals(orderId)) {
+                        ordersList.add(document.toObject(OrderModel::class.java)!!)
+                    }
+                }
+            }
+        }
+
 
         return try {
             Response.Sucess(ordersList)
