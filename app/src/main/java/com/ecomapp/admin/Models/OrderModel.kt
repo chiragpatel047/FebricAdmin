@@ -15,6 +15,7 @@ data class OrderModel(
     val city : String? = null,
     val state : String? = null,
     val zipCode : String? = null,
-    val phoneNO : String? = null
+    val phoneNO : String? = null,
+    val deliveryDate : String? = null
 
 )

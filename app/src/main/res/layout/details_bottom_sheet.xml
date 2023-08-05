@@ -49,7 +49,7 @@
             app:layout_constraintTop_toTopOf="@+id/textView57" />
 
         <TextView
-            android:id="@+id/trackingno5"
+            android:id="@+id/delivery_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -145,7 +145,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:fontFamily="@font/poppins_medium"
-            android:text="Quantity : "
+            android:text="Delivery : "
             android:textColor="@color/second_font_color"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="@+id/textView48"

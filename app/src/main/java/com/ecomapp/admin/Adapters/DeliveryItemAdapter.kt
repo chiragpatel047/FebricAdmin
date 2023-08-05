@@ -3,6 +3,7 @@ package com.ecomapp.febric.Adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -56,12 +57,14 @@ class DeliveryItemAdapter(
 
         holder.devliveryItemBinding.delivered.setOnClickListener {
             deliveryItemArrayList.remove(singleItem)
+            Toast.makeText(context,"Mark as Delivered",Toast.LENGTH_SHORT).show()
             deliveredOrderFun.invoke(singleItem.orderId!!, singleItem.userId!!)
             notifyDataSetChanged()
         }
 
         holder.devliveryItemBinding.cancel.setOnClickListener {
             deliveryItemArrayList.remove(singleItem)
+            Toast.makeText(context,"Order Cancelled",Toast.LENGTH_SHORT).show()
             cancelOrderFun.invoke(singleItem.orderId!!, singleItem.userId!!)
             notifyItemRemoved(position)
             notifyDataSetChanged()
@@ -87,6 +90,7 @@ class DeliveryItemAdapter(
             bottomSheetView.topAddress.text = singleItem.city+", "+singleItem.state+" "+singleItem.zipCode
             bottomSheetView.itemPrice.text = singleItem.productPrice+"₹"
             bottomSheetView.trackingno3.text = singleItem.phoneNO
+            bottomSheetView.deliveryDate.text = singleItem.deliveryDate
 
             bottomSheetView.continueShopping.setOnClickListener {
                 bottomSheet.dismiss()

@@ -36,7 +36,6 @@ class Orders : Fragment() {
 
     var selectedTab : String = "PendingOrders"
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

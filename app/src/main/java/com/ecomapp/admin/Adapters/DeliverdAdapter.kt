@@ -85,6 +85,7 @@ class DeliverdAdapter(
             bottomSheetView.topAddress.text = singleItem.city+", "+singleItem.state+" "+singleItem.zipCode
             bottomSheetView.itemPrice.text = singleItem.productPrice+"₹"
             bottomSheetView.trackingno3.text = singleItem.phoneNO
+            bottomSheetView.deliveryDate.text = singleItem.deliveryDate
 
             bottomSheetView.continueShopping.setOnClickListener {
                 bottomSheet.dismiss()

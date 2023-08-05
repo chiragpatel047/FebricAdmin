@@ -17,6 +17,8 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
 import javax.inject.Inject
 
 class DataRepository @Inject constructor(val database : FirebaseFirestore,val storage: FirebaseStorage) {
@@ -46,7 +48,6 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
             Response.Error(e.message.toString())
         }
     }
-
 
     suspend fun UpdateBanners(pos : String,bannerModel: BannerModel) : Response<String>{
 
@@ -152,7 +153,6 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
             }
         }
 
-
         return try {
             Response.Sucess(productList)
         } catch (e: Exception) {
@@ -204,7 +204,6 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
             Response.Error(e.message.toString())
         }
     }
-
 
     suspend fun deleteMainCategory(parentCat : String,mainCat : String) :  Response<String>{
 
@@ -282,7 +281,6 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
             Response.Error(e.message.toString())
         }
     }
-
 
     suspend fun LoadAllProducts() : Response<ArrayList<ProuctModel>>{
 
@@ -513,7 +511,6 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
             }
         }
 
-
         return try {
             Response.Sucess(ordersList)
         }catch (e : Exception){
@@ -522,6 +519,17 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
     }
 
     suspend fun DeliveredOrder(orderId : String, userId : String) : Response<String>{
+
+        val updateDeliveryDate = withContext(Dispatchers.IO){
+
+            val simpleDate = SimpleDateFormat("dd/MM/yyyy")
+            val dateInStr = simpleDate.format(Date())
+
+            database.collection("Orders")
+                .document(orderId)
+                .update("deliveryDate","Deliverd at "+dateInStr)
+                .await()
+        }
 
         val deleteFromPending = withContext(Dispatchers.IO){
 
@@ -569,7 +577,16 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
     }
 
     suspend fun CancelOrder(orderId : String, userId : String) : Response<String>{
+        val updateDeliveryDate = withContext(Dispatchers.IO){
 
+            val simpleDate = SimpleDateFormat("dd/MM/yyyy")
+            val dateInStr = simpleDate.format(Date())
+
+            database.collection("Orders")
+                .document(orderId)
+                .update("deliveryDate","Cancelled at "+dateInStr)
+                .await()
+        }
         val deleteFromPending = withContext(Dispatchers.IO){
 
             database.collection("PendingOrders").document(orderId)
@@ -614,6 +631,5 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
             Response.Error(e.message.toString())
         }
     }
-
 
 }
