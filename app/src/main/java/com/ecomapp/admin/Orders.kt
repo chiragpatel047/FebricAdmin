@@ -16,10 +16,10 @@ import com.ecomapp.febric.Adapters.DeliverdAdapter
 import com.ecomapp.febric.Adapters.DeliveryItemAdapter
 import com.ecomapp.febric.Models.OrderModel
 import com.ecomapp.febric.Repositories.Response
+import com.ecomapp.wear.Models.NotificationModel
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-
 
 @AndroidEntryPoint()
 class Orders : Fragment() {
@@ -45,7 +45,6 @@ class Orders : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
 
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_orders, container, false)
 
@@ -119,7 +118,9 @@ class Orders : Fragment() {
                     }else{
                         binding.noFoundText2.visibility = View.GONE
                     }
+
                     it.data.clear()
+                    
                     deliveryItemAdapter.notifyDataSetChanged()
                     deliveredAdapter.notifyDataSetChanged()
                 }

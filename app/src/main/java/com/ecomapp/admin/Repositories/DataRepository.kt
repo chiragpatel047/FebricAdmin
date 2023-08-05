@@ -11,6 +11,7 @@ import com.ecomapp.febric.Models.ProductIdModel
 import com.ecomapp.febric.Models.ProuctModel
 import com.ecomapp.febric.Models.SizeModel
 import com.ecomapp.febric.Repositories.Response
+import com.ecomapp.wear.Models.NotificationModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
@@ -569,6 +570,20 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
                 .await()
         }
 
+        val notify = withContext(Dispatchers.IO){
+
+            val simpleDate = SimpleDateFormat("dd MMM yyyy")
+            val dateInStr = simpleDate.format(Date())
+            val notificationModel = NotificationModel("Your order is delivered successfully for orderid : "+orderId,dateInStr)
+
+            database.collection("users")
+                .document(userId)
+                .collection("notifications")
+                .document(System.currentTimeMillis().toString())
+                .set(notificationModel)
+                .await()
+        }
+
         return try {
             Response.Sucess("Success")
         }catch (e : Exception){
@@ -624,6 +639,21 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
                 .set(order)
                 .await()
         }
+
+        val notify = withContext(Dispatchers.IO){
+
+            val simpleDate = SimpleDateFormat("dd MMM yyyy")
+            val dateInStr = simpleDate.format(Date())
+            val notificationModel = NotificationModel("Your order is cancelled by seller for orderid : "+orderId,dateInStr)
+
+            database.collection("users")
+                .document(userId)
+                .collection("notifications")
+                .document(System.currentTimeMillis().toString())
+                .set(notificationModel)
+                .await()
+        }
+
 
         return try {
             Response.Sucess("Success")

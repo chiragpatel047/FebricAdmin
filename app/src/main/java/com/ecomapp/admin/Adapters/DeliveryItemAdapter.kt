@@ -4,12 +4,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ecomapp.admin.databinding.DeliveryItemSingleBinding
 import com.ecomapp.febric.Models.OrderModel
 import com.ecomapp.admin.R
+import com.ecomapp.admin.databinding.DeleteDialogBinding
 import com.ecomapp.admin.databinding.DetailsBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -56,18 +58,61 @@ class DeliveryItemAdapter(
         holder.devliveryItemBinding.quantity.text = "1"
 
         holder.devliveryItemBinding.delivered.setOnClickListener {
-            deliveryItemArrayList.remove(singleItem)
-            Toast.makeText(context,"Mark as Delivered",Toast.LENGTH_SHORT).show()
-            deliveredOrderFun.invoke(singleItem.orderId!!, singleItem.userId!!)
-            notifyDataSetChanged()
+
+            val dialogBinding : DeleteDialogBinding = DataBindingUtil.inflate(LayoutInflater.from(context),R.layout.delete_dialog,null,false)
+
+            val alertDialog = AlertDialog.Builder(context)
+                .setView(dialogBinding.root).create()
+
+            dialogBinding.subCatName.text = "Is Delivered ? "
+            dialogBinding.subCatName2.text = " Are you sure do you want to mark this order as delivered ?"
+            dialogBinding.btnYes.text = "Yes"
+            dialogBinding.btnDiscard.text = "No"
+
+            alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            alertDialog.show()
+
+            dialogBinding.btnYes.setOnClickListener{
+                alertDialog.dismiss()
+                deliveryItemArrayList.remove(singleItem)
+                Toast.makeText(context,"Mark as Delivered",Toast.LENGTH_SHORT).show()
+                deliveredOrderFun.invoke(singleItem.orderId!!, singleItem.userId!!)
+                notifyDataSetChanged()
+            }
+
+            dialogBinding.btnDiscard.setOnClickListener {
+                alertDialog.dismiss()
+            }
+
         }
 
         holder.devliveryItemBinding.cancel.setOnClickListener {
-            deliveryItemArrayList.remove(singleItem)
-            Toast.makeText(context,"Order Cancelled",Toast.LENGTH_SHORT).show()
-            cancelOrderFun.invoke(singleItem.orderId!!, singleItem.userId!!)
-            notifyItemRemoved(position)
-            notifyDataSetChanged()
+
+            val dialogBinding : DeleteDialogBinding = DataBindingUtil.inflate(LayoutInflater.from(context),R.layout.delete_dialog,null,false)
+
+            val alertDialog = AlertDialog.Builder(context)
+                .setView(dialogBinding.root).create()
+
+            dialogBinding.subCatName.text = "Cancel Order"
+            dialogBinding.subCatName2.text = " Are you sure do you want to cancel this order ?"
+            dialogBinding.btnYes.text = "Yes"
+            dialogBinding.btnDiscard.text = "No"
+
+            alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            alertDialog.show()
+
+            dialogBinding.btnYes.setOnClickListener{
+                alertDialog.dismiss()
+                deliveryItemArrayList.remove(singleItem)
+                Toast.makeText(context,"Order Cancelled",Toast.LENGTH_SHORT).show()
+                cancelOrderFun.invoke(singleItem.orderId!!, singleItem.userId!!)
+                notifyItemRemoved(position)
+                notifyDataSetChanged()
+            }
+
+            dialogBinding.btnDiscard.setOnClickListener {
+                alertDialog.dismiss()
+            }
 
         }
 
