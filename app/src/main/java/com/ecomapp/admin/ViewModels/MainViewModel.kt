@@ -33,16 +33,16 @@ class MainViewModel @Inject constructor(val dataRepository: DataRepository) : Vi
         }
     }
 
-    fun DeliveredOrder(orderId : String, userId : String){
+    fun DeliveredOrder(orderId : String, userId : String,productId: String,productMainImage : String){
         viewModelScope.async {
-            val result = dataRepository.DeliveredOrder(orderId,userId)
+            val result = dataRepository.DeliveredOrder(orderId,userId,productId,productMainImage)
             deliver_mutableLiveData.postValue(result)
         }
     }
 
-    fun CancelOrder(orderId : String, userId : String){
+    fun CancelOrder(orderId : String, userId : String,productId: String,productMainImage : String){
         viewModelScope.async {
-            val result = dataRepository.CancelOrder(orderId,userId)
+            val result = dataRepository.CancelOrder(orderId,userId,productId,productMainImage)
             cancel_mutableLiveData.postValue(result)
         }
     }

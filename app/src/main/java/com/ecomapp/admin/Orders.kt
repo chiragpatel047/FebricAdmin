@@ -137,11 +137,11 @@ class Orders : Fragment() {
         return binding.root
     }
 
-    fun deliveredOrder(orderId : String, userId : String){
-        mainViewModel.DeliveredOrder(orderId,userId)
+    fun deliveredOrder(orderId : String, userId : String,productId: String,productMainImage : String){
+        mainViewModel.DeliveredOrder(orderId,userId,productId,productMainImage)
     }
 
-    fun cancelOrder(orderId : String, userId : String){
-        mainViewModel.CancelOrder(orderId,userId)
+    fun cancelOrder(orderId : String, userId : String,productId: String,productMainImage : String){
+        mainViewModel.CancelOrder(orderId,userId,productId,productMainImage)
     }
 }

@@ -18,8 +18,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 class DeliveryItemAdapter(
     myContext: Context,
     myDeliveryItemModel: ArrayList<OrderModel>,
-    val deliveredOrderFun: (String, String) -> Unit,
-    val cancelOrderFun: (String, String) -> Unit
+    val deliveredOrderFun: (String, String,String, String) -> Unit,
+    val cancelOrderFun: (String, String,String, String) -> Unit
 
 ) : RecyclerView.Adapter<DeliveryItemAdapter.DeliveryItemViewHolder>() {
 
@@ -76,7 +76,7 @@ class DeliveryItemAdapter(
                 alertDialog.dismiss()
                 deliveryItemArrayList.remove(singleItem)
                 Toast.makeText(context,"Mark as Delivered",Toast.LENGTH_SHORT).show()
-                deliveredOrderFun.invoke(singleItem.orderId!!, singleItem.userId!!)
+                deliveredOrderFun.invoke(singleItem.orderId!!, singleItem.userId!!,singleItem.productId!!,singleItem.productImage!!)
                 notifyDataSetChanged()
             }
 
@@ -105,7 +105,7 @@ class DeliveryItemAdapter(
                 alertDialog.dismiss()
                 deliveryItemArrayList.remove(singleItem)
                 Toast.makeText(context,"Order Cancelled",Toast.LENGTH_SHORT).show()
-                cancelOrderFun.invoke(singleItem.orderId!!, singleItem.userId!!)
+                cancelOrderFun.invoke(singleItem.orderId!!, singleItem.userId!!,singleItem.productId!!,singleItem.productImage!!)
                 notifyItemRemoved(position)
                 notifyDataSetChanged()
             }
@@ -113,7 +113,6 @@ class DeliveryItemAdapter(
             dialogBinding.btnDiscard.setOnClickListener {
                 alertDialog.dismiss()
             }
-
         }
 
         holder.itemView.setOnClickListener {

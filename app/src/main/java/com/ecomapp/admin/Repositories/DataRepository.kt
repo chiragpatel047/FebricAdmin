@@ -519,7 +519,7 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
         }
     }
 
-    suspend fun DeliveredOrder(orderId : String, userId : String) : Response<String>{
+    suspend fun DeliveredOrder(orderId : String, userId : String,productId: String,productMainImage : String) : Response<String>{
 
         val updateDeliveryDate = withContext(Dispatchers.IO){
 
@@ -572,9 +572,7 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
 
         val notify = withContext(Dispatchers.IO){
 
-            val simpleDate = SimpleDateFormat("dd MMM yyyy")
-            val dateInStr = simpleDate.format(Date())
-            val notificationModel = NotificationModel("Your order is delivered successfully for orderid : "+orderId,dateInStr)
+            val notificationModel = NotificationModel("Your order is delivered successfully for tracking no : "+orderId,"Delivered",productId,productMainImage)
 
             database.collection("users")
                 .document(userId)
@@ -591,7 +589,7 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
         }
     }
 
-    suspend fun CancelOrder(orderId : String, userId : String) : Response<String>{
+    suspend fun CancelOrder(orderId : String, userId : String,productId: String,productMainImage : String) : Response<String>{
         val updateDeliveryDate = withContext(Dispatchers.IO){
 
             val simpleDate = SimpleDateFormat("dd/MM/yyyy")
@@ -626,6 +624,7 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
                 .document(orderId)
                 .delete()
                 .await()
+
         }
 
         val userAddToDelivered = withContext(Dispatchers.IO){
@@ -642,9 +641,7 @@ class DataRepository @Inject constructor(val database : FirebaseFirestore,val st
 
         val notify = withContext(Dispatchers.IO){
 
-            val simpleDate = SimpleDateFormat("dd MMM yyyy")
-            val dateInStr = simpleDate.format(Date())
-            val notificationModel = NotificationModel("Your order is cancelled by seller for orderid : "+orderId,dateInStr)
+            val notificationModel = NotificationModel("Your order is cancelled by seller for tracking no : "+orderId,"Cancelled",productId,productMainImage)
 
             database.collection("users")
                 .document(userId)
