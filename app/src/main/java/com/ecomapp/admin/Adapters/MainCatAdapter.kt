@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ecomapp.admin.SubCategory
 import com.ecomapp.admin.Models.MainCatModel
+import com.ecomapp.admin.Products
 import com.ecomapp.admin.R
 import com.ecomapp.admin.databinding.DeleteDialogBinding
 import com.ecomapp.admin.databinding.MainCategorySingleBinding
@@ -76,9 +77,8 @@ class MainCatAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            val intent = Intent(context, SubCategory::class.java)
+            val intent = Intent(context, Products::class.java)
             intent.putExtra("mainCat",singleMainCat.mainCatName)
-            intent.putExtra("parentCat",onCatClicked.invoke())
             context.startActivity(intent)
         }
     }

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ecomapp.admin.Models.BannerModel
 import com.ecomapp.admin.Models.MainCatModel
+import com.ecomapp.admin.Models.ParentCatModel
 import com.ecomapp.admin.Models.ProductImageModel
 import com.ecomapp.admin.Models.SubCatModel
 import com.ecomapp.admin.Repositories.DataRepository
@@ -33,6 +34,10 @@ class SelectCateViewModel @Inject constructor(val dataRepository: DataRepository
     val add_liveData: LiveData<Response<String>>
         get() = add_mutableLiveData
 
+    var _parentCategories = MutableLiveData<Response<ArrayList<ParentCatModel>>>()
+    val parentCategories : LiveData<Response<ArrayList<ParentCatModel>>>
+        get() = _parentCategories
+
     fun LoadHomeBanners(){
         viewModelScope.async {
             val result = dataRepository.LoadHomeBanners()
@@ -40,6 +45,12 @@ class SelectCateViewModel @Inject constructor(val dataRepository: DataRepository
         }
     }
 
+    fun LoadParentCateories(){
+        viewModelScope.async {
+            val result = dataRepository.LoadParentCategories()
+            _parentCategories.postValue(result)
+        }
+    }
     fun LoadMainCategories(catName : String){
         viewModelScope.async {
             val result = dataRepository.LoadMainCategories(catName)
@@ -47,17 +58,11 @@ class SelectCateViewModel @Inject constructor(val dataRepository: DataRepository
         }
     }
 
-    fun LoadSubCatigories(parentCatName: String, mainCatName: String) {
-        viewModelScope.async {
-            val result = dataRepository.LoadSubCatigories(parentCatName, mainCatName)
-            subCat_mutableLiveData.postValue(result)
-        }
-    }
-    fun AddNewProduct(parentCatName: String, mainCatName: String,subCatName : String, prouctModel: ProuctModel ,sizeList : ArrayList<SizeModel>,
+    fun AddNewProduct( prouctModel: ProuctModel ,sizeList : ArrayList<SizeModel>,
                       imageList : ArrayList<ProductImageModel>,selectedList : ArrayList<String>){
 
         viewModelScope.async {
-            val result = dataRepository.AddNewProduct(parentCatName, mainCatName,subCatName,prouctModel,sizeList,imageList,selectedList)
+            val result = dataRepository.AddNewProduct(prouctModel,sizeList,imageList,selectedList)
             add_mutableLiveData.postValue(result)
         }
     }

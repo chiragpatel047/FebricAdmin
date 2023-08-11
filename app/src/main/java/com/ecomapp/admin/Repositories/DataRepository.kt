@@ -5,6 +5,7 @@ import com.ecomapp.admin.Api.NotificationApi
 import com.ecomapp.admin.Models.BannerModel
 import com.ecomapp.admin.Models.FirebaseNotificationModel
 import com.ecomapp.admin.Models.MainCatModel
+import com.ecomapp.admin.Models.ParentCatModel
 import com.ecomapp.admin.Models.ProductImageModel
 import com.ecomapp.admin.Models.PushNotification
 import com.ecomapp.admin.Models.SubCatModel
@@ -33,6 +34,7 @@ class DataRepository @Inject constructor(
 
     var bannerList = ArrayList<BannerModel>()
     var mainCatList = ArrayList<MainCatModel>()
+    var parentCatList = ArrayList<ParentCatModel>()
     var subCatList = ArrayList<SubCatModel>()
     var AllProductList = ArrayList<ProuctModel>()
     var productList = ArrayList<ProuctModel>()
@@ -124,45 +126,17 @@ class DataRepository @Inject constructor(
     }
 
     suspend fun LoadProducts(
-        parentCatName: String,
         mainCatName: String,
-        subCatName: String
     ): Response<ArrayList<ProuctModel>> {
 
         val snapshot = withContext(Dispatchers.IO) {
-            database.collection("Categories")
-                .document(parentCatName)
-                .collection("MainCategories")
-                .document(mainCatName)
-                .collection("SubCategories")
-                .document(subCatName)
-                .collection("Products").get().await()
+            database.collection("AllProducts")
+                .whereEqualTo("productCategory",mainCatName)
+                .get().await()
         }
-
-
-        val productIds = ArrayList<String>()
 
         val fetching = withContext(Dispatchers.IO) {
-
-            for (document in snapshot.getDocuments()) {
-                val productId = document.getString("productId")
-                productIds.add(productId!!)
-            }
-        }
-
-
-        val snapshot2 = withContext(Dispatchers.IO) {
-            database.collection("AllProducts").get().await()
-        }
-        val fetching2 = withContext(Dispatchers.IO) {
-            for (document in snapshot2.getDocuments()) {
-                val productId = document.getString("productId")
-                for (id in productIds) {
-                    if (id.equals(productId)) {
-                        productList.add(document.toObject(ProuctModel::class.java)!!)
-                    }
-                }
-            }
+            productList.addAll(snapshot.toObjects(ProuctModel::class.java))
         }
 
         return try {
@@ -172,8 +146,41 @@ class DataRepository @Inject constructor(
         }
     }
 
-    suspend fun LoadMainCategories(catName: String): Response<ArrayList<MainCatModel>> {
+    suspend fun addParentCategory(parentCatName: String): Response<String> {
 
+        val parentCatModel = ParentCatModel(System.currentTimeMillis().toString(),parentCatName)
+
+        val snapshot = withContext(Dispatchers.IO) {
+            database.collection("Categories")
+                .document(parentCatName)
+                .set(parentCatModel).await()
+        }
+
+        return try {
+            Response.Sucess("Success")
+        } catch (e: Exception) {
+            Response.Error(e.message.toString())
+        }
+    }
+    suspend fun LoadParentCategories(): Response<ArrayList<ParentCatModel>> {
+
+        val snapshot = withContext(Dispatchers.IO) {
+            database.collection("Categories").orderBy("parentCatId")
+                .get().await()
+        }
+
+        val fetching = withContext(Dispatchers.IO) {
+            parentCatList.addAll(snapshot.toObjects(ParentCatModel::class.java))
+        }
+
+        return try {
+            Response.Sucess(parentCatList)
+        } catch (e: Exception) {
+            Response.Error(e.message.toString())
+        }
+    }
+
+    suspend fun LoadMainCategories(catName: String): Response<ArrayList<MainCatModel>> {
 
         val snapshot = withContext(Dispatchers.IO) {
             database.collection("Categories")
@@ -323,7 +330,6 @@ class DataRepository @Inject constructor(
     }
 
     suspend fun AddNewProduct(
-        parentCatName: String, mainCatName: String, subCatName: String,
         prouctModel: ProuctModel,
         sizeList: ArrayList<SizeModel>,
         imageList: ArrayList<ProductImageModel>,
@@ -384,21 +390,6 @@ class DataRepository @Inject constructor(
                     .await()
                 i++
             }
-        }
-
-        val insertIntoCat = withContext(Dispatchers.IO) {
-
-            val productIdModel: ProductIdModel = ProductIdModel(prouctModel.productId)
-
-            database.collection("Categories")
-                .document(parentCatName)
-                .collection("MainCategories")
-                .document(mainCatName)
-                .collection("SubCategories")
-                .document(subCatName)
-                .collection("Products")
-                .document(prouctModel.productId!!)
-                .set(productIdModel).await()
         }
 
         val insertIntoBanners = withContext(Dispatchers.IO) {
@@ -472,23 +463,14 @@ class DataRepository @Inject constructor(
     }
 
     suspend fun deleteProductFromCat(
-        parentCatName: String,
-        mainCatName: String,
-        subCatName: String,
-        productId: String
+        productId: String,
     ): Response<String> {
 
         val delete = withContext(Dispatchers.IO) {
 
-            database.collection("Categories")
-                .document(parentCatName)
-                .collection("MainCategories")
-                .document(mainCatName)
-                .collection("SubCategories")
-                .document(subCatName)
-                .collection("Products")
+            database.collection("AllProducts")
                 .document(productId)
-                .delete().await()
+                .update("productCategory","none").await()
         }
         return try {
             Response.Sucess("success")

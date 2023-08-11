@@ -39,6 +39,7 @@ class AddProduct : AppCompatActivity() {
         var productDesc : String = ""
         var productOldPrice : String = ""
         var productPrice : String = ""
+        var productCategory : String = ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +76,7 @@ class AddProduct : AppCompatActivity() {
                         productOldPrice = it.data?.productOldPrice!!
                         productPrice = it.data?.productPrice!!
                         productMainImage = it.data?.productMainImage!!
+                        productCategory = it.data?.productCategory!!
                         noOfRating = it.data?.noOfRating!!
                         rate = it.data?.rate!!
 
@@ -122,7 +124,7 @@ class AddProduct : AppCompatActivity() {
                 loadingDialog.show()
 
                 val prouctModel = ProuctModel(productId, productTitle, productSubTitle, productDesc,
-                    productOldPrice, productPrice,productMainImage,noOfRating,rate)
+                    productOldPrice, productPrice,productMainImage,productCategory,noOfRating,rate)
                 addProductViewModel.updateProduct(prouctModel)
 
                 addProductViewModel.addProduct_liveData.observe(this,{

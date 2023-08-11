@@ -103,7 +103,7 @@
                 android:layout_marginStart="10dp"
                 android:fontFamily="@font/poppins_medium"
                 android:paddingRight="5dp"
-                android:text="Add sub Category"
+                android:text="Add Sub Category"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toEndOf="@+id/imageView13"
                 app:layout_constraintTop_toTopOf="parent" />

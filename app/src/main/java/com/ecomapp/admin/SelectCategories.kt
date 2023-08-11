@@ -84,11 +84,24 @@ class SelectCategories : AppCompatActivity() {
         ParentCatSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         binding.parentCatSpinner.adapter = ParentCatSpinnerAdapter
-        ParentCatSpinnerAdapter.add("Select category")
-        ParentCatSpinnerAdapter.add("Mens")
-        ParentCatSpinnerAdapter.add("Womens")
-        ParentCatSpinnerAdapter.add("Kids")
-        ParentCatSpinnerAdapter.notifyDataSetChanged()
+        selectCateViewModel.LoadParentCateories()
+
+        selectCateViewModel.parentCategories.observe(this,{
+            when(it){
+                is Response.Sucess -> {
+                    ParentCatSpinnerAdapter.clear()
+                    ParentCatSpinnerAdapter.add("Select category")
+                    for(single in it.data!!){
+                        ParentCatSpinnerAdapter.add(single.parentCatName)
+                    }
+                    ParentCatSpinnerAdapter.notifyDataSetChanged()
+                }
+                is Response.Error -> TODO()
+                is Response.Loading -> TODO()
+            }
+        })
+
+
 
         val MainCatSpinnerAdapter =
             ArrayAdapter<String>(this, R.layout.spinner_view)
@@ -99,14 +112,6 @@ class SelectCategories : AppCompatActivity() {
         MainCatSpinnerAdapter.add("Select sub category")
         MainCatSpinnerAdapter.notifyDataSetChanged()
 
-        val SubCatSpinnerAdapter =
-            ArrayAdapter<String>(this, R.layout.spinner_view)
-
-        SubCatSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        binding.subCatSpinner2.adapter = SubCatSpinnerAdapter
-        SubCatSpinnerAdapter.add("Select sub category")
-        SubCatSpinnerAdapter.notifyDataSetChanged()
 
         selectCateViewModel.mainCat_liveData.observe(this,{
             when(it){
@@ -133,28 +138,6 @@ class SelectCategories : AppCompatActivity() {
             }
         })
 
-        selectCateViewModel.subCat_liveData.observe(this,{
-            when(it){
-                is Response.Sucess ->{
-                    SubCatSpinnerAdapter.clear()
-                    SubCatSpinnerAdapter.add("Select sub category")
-
-                    for(singleItem in it.data!!){
-                        SubCatSpinnerAdapter.add(singleItem.subCatName)
-                    }
-                    SubCatSpinnerAdapter.notifyDataSetChanged()
-                    it.data.clear()
-                }
-                is Response.Error ->{
-
-                }
-                is Response.Loading ->{
-
-                }
-
-            }
-        })
-
         binding.parentCatSpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
 
@@ -178,19 +161,10 @@ class SelectCategories : AppCompatActivity() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 
                 selectedMainCat = binding.subCatSpinner.selectedItem.toString()
-                selectCateViewModel.LoadSubCatigories(selectedParentCat,selectedMainCat)
+
             }
         }
 
-        binding.subCatSpinner2?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                selectedSubCat = binding.subCatSpinner2.selectedItem.toString()
-            }
-        }
 
         selectCateViewModel.add_liveData.observe(this,{
             when(it){
@@ -240,6 +214,7 @@ class SelectCategories : AppCompatActivity() {
                 ProductOldPrice,
                 ProductPrice,
                 ProductMainImage,
+                selectedMainCat,
                 NoOfRating,
                 Rate)
 
@@ -266,7 +241,7 @@ class SelectCategories : AppCompatActivity() {
             if(binding.checkboxTop6.isChecked){
                 selectedList.add("6")
             }
-            selectCateViewModel.AddNewProduct(selectedParentCat,selectedMainCat,selectedSubCat,prouctModel,sizeList,imageList,selectedList)
+            selectCateViewModel.AddNewProduct(prouctModel,sizeList,imageList,selectedList)
 
         }
     }

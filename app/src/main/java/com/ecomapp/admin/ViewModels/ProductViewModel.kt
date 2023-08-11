@@ -56,9 +56,9 @@ class ProductViewModel @Inject constructor(val dataRepository: DataRepository) :
             banner_product_mutableLiveData.postValue(result)
         }
     }
-    fun LoadProducts(parentCatName : String,mainCatName : String,subCatName : String){
+    fun LoadProducts(mainCatName : String){
         viewModelScope.async {
-            val result = dataRepository.LoadProducts(parentCatName,mainCatName,subCatName)
+            val result = dataRepository.LoadProducts(mainCatName)
             cat_product_mutableLiveData.postValue(result)
         }
     }
@@ -70,9 +70,9 @@ class ProductViewModel @Inject constructor(val dataRepository: DataRepository) :
         }
     }
 
-    fun deleteProductFromCat(parentCatName : String,mainCatName : String,subCatName : String, productId : String){
+    fun deleteProductFromCat(productId : String){
         viewModelScope.async {
-            val result = dataRepository.deleteProductFromCat(parentCatName,mainCatName,subCatName,productId)
+            val result = dataRepository.deleteProductFromCat(productId)
             delete_from_cat_mutableLiveData.postValue(result)
         }
     }

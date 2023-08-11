@@ -32,9 +32,7 @@ class Products : AppCompatActivity() {
     var loadFor : String? = ""
     var loadUsing : String? = ""
 
-    var parentCat : String? = ""
     var mainCat : String? = ""
-    var subCat : String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,16 +46,14 @@ class Products : AppCompatActivity() {
 
         loadUsing = intent.getStringExtra("loadUsing")
 
-        parentCat = intent.getStringExtra("parentCat")
         mainCat = intent.getStringExtra("mainCat")
-        subCat = intent.getStringExtra("subCat")
 
         if(loadFor=="banner"){
             productViewModel.LoadBannersProducts(loadUsing!!)
         }else if(loadFor=="all"){
             productViewModel.LoadAllProducts()
-        }else if(loadFor=="cat"){
-            productViewModel.LoadProducts(parentCat!!, mainCat!!,subCat!!)
+        }else {
+            productViewModel.LoadProducts(mainCat!!)
         }
 
         productList = ArrayList()
@@ -173,6 +169,6 @@ class Products : AppCompatActivity() {
        productViewModel.deleteProductFromBanner(loadUsing!!,productId)
     }
     fun deleteProductFromCat(productId : String){
-        productViewModel.deleteProductFromCat(parentCat!!,mainCat!!,subCat!!,productId)
+        productViewModel.deleteProductFromCat(productId)
     }
 }
